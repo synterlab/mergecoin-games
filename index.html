@@ -708,6 +708,190 @@
   /* Left panel only exists in landscape via JS, hide by default */
   #left-panel { display: none; }
 
+  /* ═══════════════════════════════════════
+     PROFESSIONAL LOGIN SCREEN
+  ═══════════════════════════════════════ */
+  #login-screen {
+    position: fixed; inset: 0; z-index: 450;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 35%, #221810 0%, #181210 50%, #100E0E 100%);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+    overflow: hidden;
+  }
+  #login-screen.active { opacity: 1; pointer-events: all; }
+  #login-screen.gone { display: none !important; }
+
+  #login-screen-bloom {
+    position: absolute; width: 620px; height: 420px;
+    top: -90px; left: 50%; transform: translateX(-50%);
+    background: radial-gradient(ellipse at center,
+      rgba(212,20,90,0.20) 0%, rgba(255,120,20,0.12) 38%, transparent 70%);
+    pointer-events: none; animation: bloomPulse 4s ease-in-out infinite;
+  }
+  #login-screen-grid {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.045;
+    background-image: linear-gradient(rgba(255,180,0,1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,180,0,1) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .login-panel {
+    position: relative; z-index: 2;
+    width: 90%; max-width: 360px;
+    background: linear-gradient(145deg, rgba(38,26,18,0.97), rgba(22,17,14,0.99));
+    border: 1px solid rgba(255,180,0,0.25);
+    border-radius: 24px;
+    padding: 28px 24px 20px;
+    box-shadow:
+      0 0 0 1px rgba(255,180,0,0.06),
+      0 0 70px rgba(212,20,90,0.14),
+      0 0 120px rgba(255,120,20,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: panelReveal 0.45s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes panelReveal {
+    from { transform: translateY(40px) scale(0.95); opacity: 0; }
+    to   { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  .login-panel::before {
+    content: ''; position: absolute;
+    top: 0; left: 12%; right: 12%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), transparent);
+    border-radius: 0 0 2px 2px;
+  }
+
+  .login-logo-area {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 22px;
+    filter: drop-shadow(0 0 18px rgba(212,20,90,0.3));
+  }
+  .login-game-title {
+    font-family: 'Exo 2', sans-serif; font-weight: 900;
+    font-size: 1.6rem; letter-spacing: 0.1em;
+    background: linear-gradient(160deg, #FFE566 0%, #FFD700 30%, #F59E0B 65%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(255,190,0,0.55));
+    margin-top: 10px; margin-bottom: 3px;
+  }
+  .login-studio-text {
+    font-family: 'Orbitron', monospace; font-size: 0.4rem;
+    letter-spacing: 0.38em; color: rgba(255,190,0,0.48);
+    text-transform: uppercase; text-shadow: 0 0 8px rgba(255,180,0,0.28);
+  }
+
+  .login-tabs {
+    display: flex; gap: 4px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,180,0,0.14);
+    border-radius: 12px; padding: 4px;
+    margin-bottom: 16px;
+  }
+  .login-tab {
+    flex: 1; padding: 9px 8px;
+    border-radius: 9px; border: none;
+    font-family: 'Exo 2', sans-serif; font-weight: 700;
+    font-size: 0.82rem; cursor: pointer;
+    background: transparent; color: var(--text-dim);
+    transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    letter-spacing: 0.04em;
+  }
+  .login-tab.active {
+    background: linear-gradient(135deg, #D4145A, #FF6820);
+    color: #fff;
+    box-shadow: 0 2px 18px rgba(212,20,90,0.45);
+  }
+
+  #auth-confirm-wrap { width: 100%; }
+
+  .login-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 10px 0 8px;
+  }
+  .login-divider::before, .login-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.22), transparent);
+  }
+  .login-divider span {
+    font-size: 0.68rem; color: var(--text-dim);
+    font-family: 'Orbitron', monospace; letter-spacing: 0.12em;
+  }
+
+  .login-version {
+    text-align: center; margin-top: 14px;
+    font-size: 0.52rem; color: rgba(255,180,0,0.22);
+    font-family: 'Orbitron', monospace; letter-spacing: 0.22em;
+  }
+
+  /* ─── User Dropdown ─── */
+  #user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px); right: 0;
+    background: linear-gradient(145deg, rgba(40,28,18,0.98), rgba(22,17,14,0.99));
+    border: 1px solid rgba(255,180,0,0.24);
+    border-radius: 14px;
+    padding: 8px 8px 10px;
+    min-width: 168px;
+    box-shadow: 0 8px 36px rgba(0,0,0,0.65), 0 0 28px rgba(212,20,90,0.1), inset 0 1px 0 rgba(255,255,255,0.07);
+    opacity: 0; pointer-events: none;
+    transform: translateY(-8px) scale(0.96);
+    transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 100;
+  }
+  #user-dropdown.show { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+  .user-dropdown-name {
+    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 0.85rem;
+    color: var(--gold); padding: 6px 10px 10px;
+    border-bottom: 1px solid rgba(255,180,0,0.15); margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .user-dropdown-btn {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid rgba(212,20,90,0.2); border-radius: 9px;
+    background: rgba(212,20,90,0.1); color: #FF7E9A;
+    font-family: 'Exo 2', sans-serif; font-weight: 600; font-size: 0.8rem;
+    cursor: pointer; text-align: left;
+    transition: background 0.18s, border-color 0.18s;
+  }
+  .user-dropdown-btn:hover { background: rgba(212,20,90,0.22); border-color: rgba(212,20,90,0.4); }
+
+  /* ─── Improved Modal Cards ─── */
+  .modal-card {
+    background: linear-gradient(145deg, rgba(38,26,18,0.97), rgba(22,17,14,0.99)) !important;
+    border: 1px solid rgba(255,180,0,0.28) !important;
+    box-shadow: 0 0 70px rgba(212,20,90,0.14), 0 0 40px rgba(255,150,0,0.08), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+    position: relative; overflow: hidden;
+  }
+  .modal-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 12%; right: 12%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.5), transparent);
+    pointer-events: none;
+  }
+  .btn-full.btn-primary {
+    background: linear-gradient(135deg, #D4145A, #FF6820) !important;
+    box-shadow: 0 4px 22px rgba(212,20,90,0.4) !important;
+    font-family: 'Exo 2', sans-serif; font-weight: 800;
+    letter-spacing: 0.06em; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-full.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 32px rgba(212,20,90,0.55) !important;
+  }
+  .btn-full.btn-primary:active { transform: scale(0.98); }
+
+  /* ─── Improved input focus ─── */
+  .input-field:focus {
+    border-color: rgba(212,20,90,0.6) !important;
+    box-shadow: 0 0 0 2px rgba(212,20,90,0.15), 0 0 14px rgba(212,20,90,0.2) !important;
+  }
+
+  /* ─── Score bar polish ─── */
+  #score-bar {
+    border-bottom: 1px solid rgba(255,180,0,0.18);
+    box-shadow: 0 2px 20px rgba(212,20,90,0.08) inset;
+  }
+
   /* Landscape: hide some intro elements to save vertical space */
   @media (orientation: landscape) and (max-height: 500px) {
     #intro-gem { width: 56px; height: 56px; margin-bottom: 8px; }
@@ -791,7 +975,13 @@
       </div>
       <div id="header-right">
         <div class="icon-btn" id="btn-menu" title="Settings">☰</div>
-        <div id="user-avatar" title="Account">?</div>
+        <div id="avatar-wrap" style="position:relative;">
+          <div id="user-avatar" title="Account">?</div>
+          <div id="user-dropdown">
+            <div class="user-dropdown-name" id="dropdown-username">—</div>
+            <button class="user-dropdown-btn" id="btn-dropdown-logout">🚪 &nbsp;Logout</button>
+          </div>
+        </div>
       </div>
     </div>
     <div id="score-bar">
@@ -829,8 +1019,64 @@
 </div>
 </div>
 
+<!-- ═══ PROFESSIONAL LOGIN SCREEN ═══ -->
+<div id="login-screen">
+  <div id="login-screen-grid"></div>
+  <div id="login-screen-bloom"></div>
+  <div class="login-panel">
+    <div class="login-logo-area">
+      <svg width="64" height="64" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lsG" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#D4145A"/>
+            <stop offset="50%" stop-color="#E84530"/>
+            <stop offset="100%" stop-color="#FF6820"/>
+          </linearGradient>
+          <radialGradient id="lsC" cx="50%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#FFE566"/>
+            <stop offset="55%" stop-color="#F59E0B"/>
+            <stop offset="100%" stop-color="#CC8800"/>
+          </radialGradient>
+          <filter id="lsGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path d="M6,10 L28,10 L50,46 L28,82 L6,82 L24,46 Z" fill="url(#lsG)" filter="url(#lsGlow)" opacity="0.97"/>
+        <path d="M86,10 L64,10 L42,46 L64,82 L86,82 L68,46 Z" fill="url(#lsG)" filter="url(#lsGlow)" opacity="0.97"/>
+        <circle cx="46" cy="46" r="22" fill="url(#lsC)" filter="url(#lsGlow)"/>
+        <circle cx="46" cy="46" r="22" fill="none" stroke="rgba(255,220,50,0.5)" stroke-width="2"/>
+        <text x="46" y="53" text-anchor="middle" fill="#6A3A00" font-weight="900" font-size="17" font-family="Arial Black,Arial,sans-serif" letter-spacing="0.5">MC</text>
+      </svg>
+      <div class="login-game-title">MergeCoin</div>
+      <div class="login-studio-text">✦ &nbsp;Synterlab Studio&nbsp; ✦</div>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" id="tab-login">Login</button>
+      <button class="login-tab" id="tab-register">Register</button>
+    </div>
+
+    <div class="error-msg" id="auth-error"></div>
+
+    <input class="input-field" id="auth-username" type="text" placeholder="Username" autocomplete="off" spellcheck="false">
+    <input class="input-field" id="auth-password" type="password" placeholder="Password" autocomplete="off">
+    <div id="auth-confirm-wrap" style="display:none;">
+      <input class="input-field" id="auth-confirm" type="password" placeholder="Confirm Password" autocomplete="off">
+    </div>
+
+    <button class="btn-full btn-primary" id="btn-auth-submit" style="margin-top:4px;">Login</button>
+
+    <div class="login-divider"><span>or</span></div>
+
+    <button class="btn-full btn-ghost" id="btn-auth-guest">🎮 &nbsp;Play as Guest</button>
+
+    <div class="login-version">MergeCoin.games &nbsp;·&nbsp; v1.1.0</div>
+  </div>
+</div>
+
 <!-- Modals -->
-<div class="modal-overlay" id="login-modal">
+<div class="modal-overlay" id="login-modal" style="display:none!important;">
   <div class="modal-card">
     <div class="modal-title" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:4px;">
       <svg width="54" height="54" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1965,12 +2211,26 @@ function init() {
   const canvas = document.getElementById('game-canvas');
   GameEngine.init(canvas);
 
-  // Header interactions
+  // Header interactions — avatar opens dropdown or login
   document.getElementById('user-avatar').addEventListener('click', () => {
     AudioEngine.init();
     const u = AuthManager.get();
-    if (u) UIManager.toast('Logged in as: ' + u.username);
-    else UIManager.showModal('login-modal');
+    if (u) {
+      document.getElementById('dropdown-username').textContent = u.username;
+      document.getElementById('user-dropdown').classList.toggle('show');
+    } else {
+      showLoginScreen();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('avatar-wrap').contains(e.target))
+      document.getElementById('user-dropdown').classList.remove('show');
+  });
+  document.getElementById('btn-dropdown-logout').addEventListener('click', () => {
+    AuthManager.logout(); UIManager.updateHeader();
+    document.getElementById('user-dropdown').classList.remove('show');
+    UIManager.toast('Logged out');
+    setTimeout(() => showLoginScreen(), 380);
   });
 
   document.getElementById('btn-menu').addEventListener('click', () => {
@@ -1983,39 +2243,73 @@ function init() {
   document.getElementById('btn-logout-settings').addEventListener('click', () => {
     AuthManager.logout(); UIManager.updateHeader(); closeSettings();
     UIManager.toast('Logged out');
-    setTimeout(() => UIManager.showModal('login-modal'), 400);
+    setTimeout(() => showLoginScreen(), 400);
   });
   function closeSettings() {
     document.getElementById('settings-panel').classList.remove('open');
     document.getElementById('settings-overlay').classList.remove('active');
   }
 
-  // Login
-  document.getElementById('btn-login').addEventListener('click', () => {
-    AudioEngine.init();
-    const u = document.getElementById('login-username').value.trim();
-    const p = document.getElementById('login-password').value;
-    const r = AuthManager.login(u, p);
-    if (r.ok) { UIManager.hideModal('login-modal'); UIManager.updateHeader(); UIManager.toast('Welcome back, ' + u + '!'); checkResumeGame(); }
-    else document.getElementById('login-error').textContent = r.msg;
+  // ─── NEW LOGIN SCREEN handlers ───
+  function showLoginScreen() {
+    const s = document.getElementById('login-screen');
+    s.classList.remove('gone');
+    requestAnimationFrame(() => s.classList.add('active'));
+    // Re-trigger panel animation by cloning
+    const panel = s.querySelector('.login-panel');
+    panel.style.animation = 'none';
+    requestAnimationFrame(() => { panel.style.animation = ''; });
+    document.getElementById('auth-error').textContent = '';
+  }
+  function hideLoginScreen() {
+    const s = document.getElementById('login-screen');
+    s.classList.remove('active');
+    setTimeout(() => s.classList.add('gone'), 370);
+  }
+
+  document.getElementById('tab-login').addEventListener('click', () => {
+    document.getElementById('tab-login').classList.add('active');
+    document.getElementById('tab-register').classList.remove('active');
+    document.getElementById('btn-auth-submit').textContent = 'Login';
+    document.getElementById('auth-confirm-wrap').style.display = 'none';
+    document.getElementById('auth-error').textContent = '';
   });
-  document.getElementById('btn-register').addEventListener('click', () => {
-    AudioEngine.init();
-    const u = document.getElementById('login-username').value.trim();
-    const p = document.getElementById('login-password').value;
-    const r = AuthManager.register(u, p);
-    if (r.ok) { UIManager.hideModal('login-modal'); UIManager.updateHeader(); UIManager.toast('Account created! Welcome, ' + u + '!'); }
-    else document.getElementById('login-error').textContent = r.msg;
+  document.getElementById('tab-register').addEventListener('click', () => {
+    document.getElementById('tab-register').classList.add('active');
+    document.getElementById('tab-login').classList.remove('active');
+    document.getElementById('btn-auth-submit').textContent = 'Create Account';
+    document.getElementById('auth-confirm-wrap').style.display = '';
+    document.getElementById('auth-error').textContent = '';
   });
-  document.getElementById('btn-guest').addEventListener('click', () => {
+
+  document.getElementById('btn-auth-submit').addEventListener('click', () => {
+    AudioEngine.init();
+    const u = document.getElementById('auth-username').value.trim();
+    const p = document.getElementById('auth-password').value;
+    const isLogin = document.getElementById('tab-login').classList.contains('active');
+    const errEl = document.getElementById('auth-error');
+    if (isLogin) {
+      const r = AuthManager.login(u, p);
+      if (r.ok) { hideLoginScreen(); UIManager.updateHeader(); UIManager.toast('Welcome back, ' + u + '!'); checkResumeGame(); }
+      else errEl.textContent = r.msg;
+    } else {
+      const c = document.getElementById('auth-confirm').value;
+      if (p !== c) { errEl.textContent = 'Passwords do not match'; return; }
+      const r = AuthManager.register(u, p);
+      if (r.ok) { hideLoginScreen(); UIManager.updateHeader(); UIManager.toast('Account created! Welcome, ' + u + '!'); }
+      else errEl.textContent = r.msg;
+    }
+  });
+  document.getElementById('btn-auth-guest').addEventListener('click', () => {
     AudioEngine.init();
     const u = AuthManager.loginGuest();
-    UIManager.hideModal('login-modal'); UIManager.updateHeader();
+    hideLoginScreen(); UIManager.updateHeader();
     UIManager.toast('Playing as ' + u.username);
   });
-  ['login-username','login-password'].forEach(id => {
-    document.getElementById(id).addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('btn-login').click();
+  ['auth-username','auth-password','auth-confirm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('btn-auth-submit').click();
     });
   });
 
@@ -2053,7 +2347,7 @@ function init() {
   // Game over
   document.getElementById('btn-play-again').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); GameEngine.reset(); });
   document.getElementById('btn-go-leaderboard').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); UIManager.renderLeaderboard('leaderboard-list'); UIManager.showModal('leaderboard-modal'); });
-  document.getElementById('btn-main-menu').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); UIManager.showModal('login-modal'); });
+  document.getElementById('btn-main-menu').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); showLoginScreen(); });
   document.getElementById('btn-close-lb').addEventListener('click', () => UIManager.hideModal('leaderboard-modal'));
 
   // ── INTRO SCREEN ──
@@ -2101,7 +2395,7 @@ function init() {
     function dismissIntro() {
       AudioEngine.init();
       introEl.classList.add('fade-out');
-      setTimeout(() => { introEl.classList.add('gone'); UIManager.showModal('login-modal'); }, 920);
+      setTimeout(() => { introEl.classList.add('gone'); showLoginScreen(); }, 920);
     }
     document.getElementById('btn-intro-play').addEventListener('click', dismissIntro);
     document.addEventListener('keydown', () => { if (!introEl.classList.contains('fade-out')) dismissIntro(); }, { once: true });
