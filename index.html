@@ -527,10 +527,10 @@
   /* Coin strip */
   #intro-coin-strip {
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 26px;
-    animation: introFadeUp 0.8s ease 1.1s both;
+    margin-bottom: 22px;
+    animation: introFadeUp 0.9s ease 1.1s both;
   }
-  #intro-coin-strip canvas { display: block; }
+  #intro-coin-strip canvas { display: block; max-width: 100%; }
 
   /* PLAY button — amber / dark text (premium contrast) */
   #btn-intro-play {
@@ -638,7 +638,7 @@
     <div id="intro-dotgames">.GAMES</div>
     <div id="intro-ecosystem-badge">CRYPTO MERGE · PHYSICS GAME</div>
     <div id="intro-coin-strip">
-      <canvas id="intro-coin-canvas" width="350" height="90" style="max-width:100%;"></canvas>
+      <canvas id="intro-coin-canvas" width="360" height="110" style="max-width:100%;"></canvas>
     </div>
     <button id="btn-intro-play">▶ &nbsp; PLAY NOW</button>
     <div style="animation:introFadeUp 0.7s ease 1.6s both;opacity:0;background:rgba(255,255,255,0.04);border:1px solid rgba(245,158,11,0.14);border-radius:12px;padding:8px 16px;display:inline-flex;align-items:center;gap:10px;margin-bottom:0px;" id="intro-badge-wrap">
@@ -2209,33 +2209,58 @@ function init() {
   (function startIntro() {
     const introEl = document.getElementById('intro-screen');
     const coinCanvas = document.getElementById('intro-coin-canvas');
-    const showcaseLevels = [1, 4, 7, 11, 15];
-    const coinR = 34;
-    const spacing = 70;
+    // ── Premium arc-depth coin showcase ─────────────────────────────────────────
+    // 7 coins in a perspective arc — center=front/large, edges=back/small/transparent
+    const arcCoins = [
+      { lvl: 1,  nx: -0.92 },
+      { lvl: 4,  nx: -0.58 },
+      { lvl: 7,  nx: -0.26 },
+      { lvl: 10, nx:  0.00 },
+      { lvl: 12, nx:  0.26 },
+      { lvl: 14, nx:  0.58 },
+      { lvl: 15, nx:  0.92 },
+    ];
+    const arcDrift = [
+      { da: 3.2, df: 0.037, dp: 0.0  },
+      { da: 4.8, df: 0.052, dp: 1.7  },
+      { da: 6.0, df: 0.060, dp: 3.2  },
+      { da: 6.5, df: 0.065, dp: 0.8  },
+      { da: 5.5, df: 0.055, dp: 2.4  },
+      { da: 4.2, df: 0.045, dp: 4.1  },
+      { da: 2.8, df: 0.040, dp: 1.1  },
+    ];
+    const CW = 360, CH = 110;
     const cCtx = coinCanvas.getContext('2d');
-    // Scale canvas for retina
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    coinCanvas.width = 350 * dpr; coinCanvas.height = 88 * dpr;
-    coinCanvas.style.width = '350px'; coinCanvas.style.height = '88px';
+    coinCanvas.width = CW * dpr; coinCanvas.height = CH * dpr;
+    coinCanvas.style.width = CW + 'px'; coinCanvas.style.height = CH + 'px';
     cCtx.scale(dpr, dpr);
 
     function animateIntroCoins() {
       if (introEl.classList.contains('gone')) return;
-      cCtx.clearRect(0, 0, 350, 88);
-      showcaseLevels.forEach((lvl, i) => {
-        const cd = COIN_DATA[lvl - 1];
-        const cx = 175 + (i - 2) * spacing;
-        const cy = 42 + Math.sin(_ftime * 0.055 + i * 1.1) * 4;
-        const sc = (coinR / cd.r) * (1 + 0.025 * Math.sin(_ftime * 0.07 + i * 0.8));
-        drawCoin(cCtx, cx, cy, cd, sc);
-        // Ticker label below — amber
+      cCtx.clearRect(0, 0, CW, CH);
+
+      // Compute depth (0.45 edges → 1.0 center), then sort back→front
+      const coins = arcCoins.map((c, i) => {
+        const depth  = 1 - 0.55 * c.nx * c.nx;
+        const cd     = COIN_DATA[c.lvl - 1];
+        const coinSc = (30 / cd.r) * (0.46 + depth * 0.72);
+        const baseX  = CW * 0.5 + c.nx * 146;
+        const arcY   = CH * 0.42 + 42 * c.nx * c.nx;   // parabola: high center
+        const dr     = arcDrift[i];
+        const cx     = baseX;
+        const cy     = arcY + Math.sin(_ftime * dr.df + dr.dp) * dr.da;
+        return { cx, cy, cd, coinSc, op: 0.38 + depth * 0.62, depth };
+      });
+      coins.sort((a, b) => a.depth - b.depth);  // painter's order
+
+      coins.forEach(({ cx, cy, cd, coinSc, op }) => {
         cCtx.save();
-        cCtx.font = `700 8px 'Orbitron',monospace`;
-        cCtx.textAlign = 'center'; cCtx.textBaseline = 'top';
-        cCtx.fillStyle = 'rgba(245,158,11,0.5)';
-        cCtx.fillText(cd.ticker.substring(0,4), cx, cy + coinR + 4);
+        cCtx.globalAlpha = op;
+        drawCoin(cCtx, cx, cy, cd, coinSc);
         cCtx.restore();
       });
+
       requestAnimationFrame(animateIntroCoins);
     }
     animateIntroCoins();
