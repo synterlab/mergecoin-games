@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#030D18">
+<meta name="theme-color" content="#0D0906">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,8 +14,8 @@
 <meta property="og:url" content="https://mergecoin.games">
 <meta property="og:description" content="Drop and merge crypto tokens. Stack your way to the top!">
 <link rel="canonical" href="https://mergecoin.games">
-<link rel="manifest" href="data:application/json,{%22name%22:%22MergeCoin.games%22,%22short_name%22:%22MergeCoin%22,%22display%22:%22fullscreen%22,%22orientation%22:%22any%22,%22background_color%22:%22%23030D18%22,%22theme_color%22:%22%23030D18%22,%22start_url%22:%22/%22}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23061625'/><circle cx='42' cy='50' r='26' fill='%2306B6D4' opacity='0.92'/><circle cx='58' cy='50' r='26' fill='%23F59E0B' opacity='0.92'/><text y='.9em' font-size='30' x='50%' text-anchor='middle' dominant-baseline='middle' fill='white' font-weight='bold' font-family='Arial,sans-serif'>MC</text></svg>">
+<link rel="manifest" href="data:application/json,{%22name%22:%22MergeCoin.games%22,%22short_name%22:%22MergeCoin%22,%22display%22:%22fullscreen%22,%22orientation%22:%22any%22,%22background_color%22:%22%230D0906%22,%22theme_color%22:%22%230D0906%22,%22start_url%22:%22/%22}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23181010'/><stop offset='100%25' stop-color='%230D0906'/></linearGradient><linearGradient id='mg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23D4145A'/><stop offset='100%25' stop-color='%23FF7518'/></linearGradient><radialGradient id='cg' cx='50%25' cy='35%25' r='65%25'><stop offset='0%25' stop-color='%23FFE566'/><stop offset='100%25' stop-color='%23CC8800'/></radialGradient></defs><rect width='100' height='100' rx='18' fill='url(%23bg)'/><polygon points='18,18 8,50 18,82 30,82 20,50 30,18' fill='url(%23mg)'/><polygon points='82,18 92,50 82,82 70,82 80,50 70,18' fill='url(%23mg)'/><circle cx='50' cy='50' r='24' fill='url(%23cg)'/><circle cx='50' cy='50' r='24' fill='none' stroke='rgba(255,220,50,0.35)' stroke-width='1.5'/><text x='50' y='56' text-anchor='middle' fill='%237A4A00' font-weight='900' font-size='18' font-family='Arial Black,Arial,sans-serif'>MC</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Inter:wght@400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -23,15 +23,17 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg-dark: #030D18;
-    --bg-mid: #061625;
-    --panel-bg: #08202F;
+    --bg-dark: #0D0906;
+    --bg-mid: #140C08;
+    --panel-bg: #1C1410;
     --accent: #F59E0B;
     --accent-bright: #D97706;
     --gold: #FFD700;
+    --brand-pink: #D4145A;
+    --brand-orange: #FF7518;
     --danger: #FF3B30;
-    --text: #E8EDF2;
-    --text-dim: #7A92A5;
+    --text: #F0E8DC;
+    --text-dim: #8A7060;
     --border: rgba(245,158,11,0.25);
     --glass: rgba(255,255,255,0.04);
     --glass-border: rgba(245,158,11,0.35);
@@ -83,7 +85,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 16px;
-    background: rgba(3,13,24,0.92);
+    background: rgba(13,9,6,0.92);
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(10px);
     flex-shrink: 0;
@@ -117,7 +119,7 @@
   #user-avatar {
     width: 30px; height: 30px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #06B6D4, #0E7490);
+    background: linear-gradient(135deg, #D4145A, #9B0E45);
     display: flex; align-items: center; justify-content: center;
     font-family: 'Exo 2', sans-serif;
     font-weight: 700;
@@ -131,7 +133,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 6px 12px;
-    background: rgba(5,16,28,0.97);
+    background: rgba(14,8,5,0.97);
     border-bottom: 1px solid rgba(245,158,11,0.2);
     flex-shrink: 0;
     box-shadow: 0 2px 24px rgba(217,119,6,0.18) inset;
@@ -238,7 +240,7 @@
       flex-direction: column;
       width: 130px;
       flex-shrink: 0;
-      background: rgba(3,13,24,0.95);
+      background: rgba(13,9,6,0.95);
       border-right: 1px solid var(--border);
       z-index: 2;
     }
@@ -508,7 +510,7 @@
   /* ─── PREMIUM VISUAL ─── */
   #vignette {
     position: fixed; inset: 0;
-    background: radial-gradient(ellipse at 50% 55%, transparent 32%, rgba(4,0,18,0.88) 100%);
+    background: radial-gradient(ellipse at 50% 55%, transparent 32%, rgba(8,4,2,0.88) 100%);
     pointer-events: none; z-index: 2;
   }
   #scanlines {
@@ -549,7 +551,7 @@
   /* ─── INTRO / SPLASH ─── */
   #intro-screen {
     position: fixed; inset: 0; z-index: 500;
-    background: #050E1A;
+    background: #0D0906;
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
     transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 0.9s cubic-bezier(0.4,0,0.2,1);
@@ -630,7 +632,7 @@
   #btn-intro-play {
     width: 100%; max-width: 280px;
     padding: 15px 28px; border: none; border-radius: 12px;
-    background: #F59E0B; color: #050E1A;
+    background: linear-gradient(135deg, #FF7518, #D4145A); color: #0D0906;
     font-family: 'Exo 2', sans-serif; font-weight: 900;
     font-size: 1rem; letter-spacing: 0.18em; text-transform: uppercase;
     cursor: pointer; position: relative; overflow: hidden;
@@ -710,25 +712,30 @@
     <div id="intro-gem">
     <svg width="80" height="80" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="tealG" cx="38%" cy="32%" r="62%" gradientUnits="objectBoundingBox">
-          <stop offset="0%" stop-color="#67E8F9"/>
-          <stop offset="100%" stop-color="#0E7490"/>
-        </radialGradient>
-        <radialGradient id="amberG" cx="62%" cy="32%" r="62%" gradientUnits="objectBoundingBox">
-          <stop offset="0%" stop-color="#FDE68A"/>
-          <stop offset="100%" stop-color="#D97706"/>
+        <linearGradient id="brandG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#D4145A"/>
+          <stop offset="50%" stop-color="#E84530"/>
+          <stop offset="100%" stop-color="#FF7518"/>
+        </linearGradient>
+        <radialGradient id="coinG" cx="50%" cy="35%" r="65%" gradientUnits="objectBoundingBox">
+          <stop offset="0%" stop-color="#FFE566"/>
+          <stop offset="60%" stop-color="#F59E0B"/>
+          <stop offset="100%" stop-color="#CC8800"/>
         </radialGradient>
         <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
           <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
-      <circle cx="36" cy="46" r="28" fill="url(#tealG)" filter="url(#softGlow)"/>
-      <circle cx="56" cy="46" r="28" fill="url(#amberG)" filter="url(#softGlow)"/>
-      <circle cx="36" cy="46" r="28" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-      <circle cx="56" cy="46" r="28" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-      <text x="46" y="53" text-anchor="middle" fill="white"
-        font-weight="900" font-size="22" font-family="'Exo 2',Arial Black,sans-serif"
+      <!-- Left bracket arm -->
+      <path d="M20,20 L8,46 L20,72 L32,72 L20,46 L32,20 Z" fill="url(#brandG)" filter="url(#softGlow)" opacity="0.95"/>
+      <!-- Right bracket arm -->
+      <path d="M72,20 L84,46 L72,72 L60,72 L72,46 L60,20 Z" fill="url(#brandG)" filter="url(#softGlow)" opacity="0.95"/>
+      <!-- Gold coin center -->
+      <circle cx="46" cy="46" r="22" fill="url(#coinG)" filter="url(#softGlow)"/>
+      <circle cx="46" cy="46" r="22" fill="none" stroke="rgba(255,220,50,0.4)" stroke-width="1.5"/>
+      <text x="46" y="52" text-anchor="middle" fill="#7A4A00"
+        font-weight="900" font-size="19" font-family="'Exo 2',Arial Black,sans-serif"
         letter-spacing="1">MC</text>
     </svg>
   </div>
@@ -755,7 +762,7 @@
   <div id="left-panel">
     <div id="header">
       <div id="header-logo">
-        <svg style="display:inline;vertical-align:middle;margin-right:4px;margin-top:-2px" width="18" height="18" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="20" r="13" fill="#06B6D4" opacity="0.9"/><circle cx="24" cy="20" r="13" fill="#F59E0B" opacity="0.9"/></svg>MergeCoin<span>.games</span>
+        <svg style="display:inline;vertical-align:middle;margin-right:4px;margin-top:-2px" width="18" height="18" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D4145A"/><stop offset="100%" stop-color="#FF7518"/></linearGradient></defs><polygon points="6,6 2,20 6,34 12,34 8,20 12,6" fill="url(#hG)"/><polygon points="34,6 38,20 34,34 28,34 32,20 28,6" fill="url(#hG)"/><circle cx="20" cy="20" r="10" fill="#F59E0B"/><circle cx="20" cy="20" r="10" fill="none" stroke="rgba(255,220,50,0.5)" stroke-width="1"/></svg>MergeCoin<span>.games</span>
       </div>
       <div id="header-right">
         <div class="icon-btn" id="btn-menu" title="Settings">☰</div>
@@ -901,7 +908,7 @@ const COIN_DATA = [
   { level:5,  name:"SikiCraft",   ticker:"SIKI", color:"#10B981", r:44  },
   { level:6,  name:"KotoApp",     ticker:"KOTO", color:"#F59E0B", r:53  },
   { level:7,  name:"NijiCAD",     ticker:"NIJI", color:"#EC4899", r:63,  logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBc1EOgc3AngWiejAsCrymoMO1YTzckudX602L" },
-  { level:8,  name:"Addness",     ticker:"ADD",  color:"#06B6D4", r:74,  logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBVZI6cf8genAKlWh71tXsdkoCmDxfv9yaYFOi" },
+  { level:8,  name:"Addness",     ticker:"ADD",  color:"#D4145A", r:74,  logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBVZI6cf8genAKlWh71tXsdkoCmDxfv9yaYFOi" },
   { level:9,  name:"QRPay",       ticker:"QRP",  color:"#84CC16", r:85  },
   { level:10, name:"169Pi",       ticker:"π",    color:"#8B5CF6", r:97  },
   { level:11, name:"ClippyMap",   ticker:"CLIP", color:"#F43F5E", r:109, logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBxARLPFc0yE9OIFmNvBuoSxqMCb5w4eZ27dci" },
@@ -1808,7 +1815,7 @@ function initStarfield() {
   const stars = Array.from({length: 120}, () => ({
     x: Math.random()*c.width, y: Math.random()*c.height,
     r: 0.4 + Math.random()*1.8,
-    color: ['#E8EDF2','#A5C8E8','#FDE68A','#67E8F9'][Math.floor(Math.random()*4)],
+    color: ['#F0E8DC','#E91E8C','#FDE68A','#FF7518'][Math.floor(Math.random()*4)],
     v: 0.025 + Math.random()*0.06,
     twinkle: Math.random()*Math.PI*2,
     twinkleSpeed: 0.015 + Math.random()*0.03
