@@ -592,6 +592,11 @@
       <canvas id="intro-coin-canvas" width="320" height="68"></canvas>
     </div>
     <button id="btn-intro-play">▶ &nbsp; PLAY NOW</button>
+    <div style="margin-top:14px;opacity:0.88;">
+      <a href="https://orynth.dev/projects/mergecoin-games" target="_blank" rel="noopener" style="display:inline-block;">
+        <img src="https://orynth.dev/api/badge/mergecoin-games?theme=light&style=default" alt="Featured on Orynth" width="200" height="62" style="border-radius:10px;display:block;" />
+      </a>
+    </div>
     <div id="intro-bottom-text">15 TOKENS &nbsp;·&nbsp; MERGE TO WIN &nbsp;·&nbsp; FREE TO PLAY</div>
   </div>
 </div>
@@ -722,7 +727,10 @@
   <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
     <div class="settings-row-label">ℹ️ About</div>
     <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
-      MergeCoin.games — Drop, merge, and dominate.<br>Stack all 15 tokens to reach the ultimate merge!
+      MergeCoin.games — Drop, merge, and dominate.<br>Stack all 15 tokens to reach the ultimate merge!<br><br>
+      <a href="https://orynth.dev/projects/mergecoin-games" target="_blank" rel="noopener">
+        <img src="https://orynth.dev/api/badge/mergecoin-games?theme=light&style=default" alt="Featured on Orynth" width="200" height="62" style="border-radius:8px;margin-top:6px;" />
+      </a>
     </div>
   </div>
   <div class="settings-row">
@@ -742,22 +750,35 @@
 // COIN DATA
 // ============================================================
 const COIN_DATA = [
-  { level:1,  name:"ORY",         ticker:"ORY",  color:"#7C3AED", r:14 },
-  { level:2,  name:"LinkPre",     ticker:"LPR",  color:"#3B82F6", r:20 },
-  { level:3,  name:"FoodGram",    ticker:"FOOD", color:"#F97316", r:27 },
-  { level:4,  name:"Blokiments",  ticker:"BLK",  color:"#EF4444", r:35 },
-  { level:5,  name:"SikiCraft",   ticker:"SIKI", color:"#10B981", r:44 },
-  { level:6,  name:"KotoApp",     ticker:"KOTO", color:"#F59E0B", r:53 },
-  { level:7,  name:"NijiCAD",     ticker:"NIJI", color:"#EC4899", r:63 },
-  { level:8,  name:"Addness",     ticker:"ADD",  color:"#06B6D4", r:74 },
-  { level:9,  name:"QRPay",       ticker:"QRP",  color:"#84CC16", r:85 },
-  { level:10, name:"169Pi",       ticker:"π",    color:"#8B5CF6", r:97 },
-  { level:11, name:"ClippyMap",   ticker:"CLIP", color:"#F43F5E", r:109 },
+  { level:1,  name:"ORY",         ticker:"ORY",  color:"#7C3AED", r:14,  logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWB22BaScemObPj0kFxfX7Dz5qirLedyZpM4VCH" },
+  { level:2,  name:"LinkPre",     ticker:"LPR",  color:"#3B82F6", r:20,  logo:"https://ol0wao9kka.ufs.sh/f/2KX7EKY8hNz6zkA6Z6qHLz0wsWyolrn9MqCBPiEJYbc4jApG" },
+  { level:3,  name:"FoodGram",    ticker:"FOOD", color:"#F97316", r:27,  logo:"https://ol0wao9kka.ufs.sh/f/2KX7EKY8hNz6h8Ft81s2T0oW8yELfKv65IzBcjRalHDsdrS4" },
+  { level:4,  name:"Blokiments",  ticker:"BLK",  color:"#EF4444", r:35,  logo:"https://ol0wao9kka.ufs.sh/f/2KX7EKY8hNz6p14pudWJu5lt9D3mz4UFHRVPWAS0vTnw7Goq" },
+  { level:5,  name:"SikiCraft",   ticker:"SIKI", color:"#10B981", r:44  },
+  { level:6,  name:"KotoApp",     ticker:"KOTO", color:"#F59E0B", r:53  },
+  { level:7,  name:"NijiCAD",     ticker:"NIJI", color:"#EC4899", r:63,  logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBc1EOgc3AngWiejAsCrymoMO1YTzckudX602L" },
+  { level:8,  name:"Addness",     ticker:"ADD",  color:"#06B6D4", r:74,  logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBVZI6cf8genAKlWh71tXsdkoCmDxfv9yaYFOi" },
+  { level:9,  name:"QRPay",       ticker:"QRP",  color:"#84CC16", r:85  },
+  { level:10, name:"169Pi",       ticker:"π",    color:"#8B5CF6", r:97  },
+  { level:11, name:"ClippyMap",   ticker:"CLIP", color:"#F43F5E", r:109, logo:"https://vn10sepav2.ufs.sh/f/eGtxdOyn6OWBxARLPFc0yE9OIFmNvBuoSxqMCb5w4eZ27dci" },
   { level:12, name:"DailyPings",  ticker:"DPG",  color:"#FF6B35", r:121 },
   { level:13, name:"DataFa.st",   ticker:"DFS",  color:"#14B8A6", r:133 },
   { level:14, name:"SynterLab",   ticker:"SYN",  color:"#6366F1", r:144 },
   { level:15, name:"ORYNTH KING", ticker:"ORY👑",color:"#FFD700", r:155 },
 ];
+
+// ── Preload real project logos from Orynth.dev ────────────────────────────
+const COIN_LOGO_IMGS = {};
+(function preloadCoinLogos() {
+  COIN_DATA.forEach(coin => {
+    if (!coin.logo) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = coin.logo;
+    img.onload = () => { COIN_LOGO_IMGS[coin.level] = img; };
+    img.onerror = () => { /* fallback to icon drawing */ };
+  });
+})();
 
 // ============================================================
 // AUDIO ENGINE
@@ -1059,6 +1080,30 @@ function drawStar4(ctx, x, y, size) {
 // COIN ICON LOGOS — one per Orynth ecosystem token
 // ============================================================
 function drawCoinIcon(ctx, x, y, r, level) {
+  // ── Use real Orynth project logo when loaded ──────────────────────────
+  if (r >= 18 && COIN_LOGO_IMGS[level]) {
+    const img = COIN_LOGO_IMGS[level];
+    const logoR = r * 0.68;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, logoR, 0, Math.PI * 2);
+    ctx.clip();
+    // Draw white bg first so transparent logos look clean
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fill();
+    ctx.drawImage(img, x - logoR, y - logoR, logoR * 2, logoR * 2);
+    ctx.restore();
+    // Subtle inner ring to polish the logo boundary
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, logoR, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = Math.max(1, r * 0.03);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+
   ctx.save();
   ctx.translate(x, y);
   const s = r * 0.50;
