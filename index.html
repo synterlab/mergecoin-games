@@ -368,11 +368,68 @@
 
   /* Resume modal */
   #resume-modal .modal-card { text-align: center; }
+
+  /* ─── PREMIUM VISUAL UPGRADES ─────────────────────── */
+  #vignette {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 50% 55%, transparent 32%, rgba(4,0,18,0.88) 100%);
+    pointer-events: none; z-index: 2;
+  }
+  #scanlines {
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.028) 2px, rgba(0,0,0,0.028) 4px);
+    pointer-events: none; z-index: 3;
+  }
+  @keyframes logoShimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  #header-logo { background-size: 250%; animation: logoShimmer 4s ease infinite; }
+  @keyframes neonBorderPulse {
+    0%,100% { box-shadow: 0 0 18px rgba(124,58,237,0.12) inset; }
+    50%      { box-shadow: 0 0 30px rgba(168,85,247,0.22) inset; }
+  }
+  #header { animation: neonBorderPulse 3.5s ease-in-out infinite; }
+  @keyframes scoreFlash {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.45); color: #fff; text-shadow: 0 0 22px #FFD700, 0 0 40px #FFD700; }
+    100% { transform: scale(1); }
+  }
+  .score-flash { animation: scoreFlash 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+  #combo-badge {
+    position: absolute; top: 16px; left: 50%;
+    transform: translateX(-50%) scale(0.6);
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1.15rem;
+    color: #FFD700; white-space: nowrap;
+    text-shadow: 0 0 18px #FFD700, 0 0 35px #FF8C00, 0 0 60px rgba(255,140,0,0.4);
+    pointer-events: none; opacity: 0;
+    transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 10;
+  }
+  #combo-badge.show { opacity: 1; transform: translateX(-50%) scale(1); }
+  .action-btn.primary {
+    box-shadow: 0 0 22px rgba(124,58,237,0.5), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .action-btn.primary:hover {
+    box-shadow: 0 0 38px rgba(168,85,247,0.8), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .modal-card {
+    box-shadow: 0 0 65px rgba(124,58,237,0.5), 0 0 130px rgba(124,58,237,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  }
+  @keyframes goScorePop {
+    0%  { opacity: 0; transform: scale(0.15) translateY(20px); }
+    65% { transform: scale(1.25) translateY(-4px); }
+    100%{ opacity: 1; transform: scale(1) translateY(0); }
+  }
+  #gameover-score { animation: goScorePop 0.75s cubic-bezier(0.34,1.56,0.64,1) both 0.35s; }
+  #next-preview { box-shadow: 0 0 18px rgba(124,58,237,0.4); }
+  #score-bar { box-shadow: 0 2px 24px rgba(124,58,237,0.18) inset; }
+  #action-bar { box-shadow: 0 -2px 20px rgba(124,58,237,0.12) inset; }
 </style>
 </head>
 <body>
 
 <canvas id="stars-bg"></canvas>
+<div id="vignette"></div>
+<div id="scanlines"></div>
 
 <div style="display:flex;justify-content:center;align-items:flex-start;width:100%;height:100vh;">
 <div id="app">
@@ -402,6 +459,7 @@
   <div id="game-wrapper">
     <canvas id="game-canvas"></canvas>
     <div id="username-overlay"></div>
+    <div id="combo-badge"></div>
   </div>
 
   <div id="action-bar">
@@ -704,48 +762,145 @@ const UIManager = (() => {
 // ============================================================
 // COIN DRAWING UTIL
 // ============================================================
+let _ftime = 0;
+
 function drawCoin(ctx, x, y, coinData, scale = 1, glow = false) {
   const r = coinData.r * scale;
   const c = coinData.color;
+  const [cr, cg, cb] = hexToRgb(c);
+  const t = _ftime * 0.018;
+  const isKing = coinData.level === 12;
+
   ctx.save();
-  if (glow) {
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = c;
-  }
-  // 3D metallic gradient
-  const grad = ctx.createRadialGradient(x - r*0.3, y - r*0.3, r*0.05, x, y, r);
-  grad.addColorStop(0, lightenHex(c, 80));
-  grad.addColorStop(0.4, c);
-  grad.addColorStop(1, darkenHex(c, 60));
+
+  // 1. Outer ambient halo (always visible, intense on glow)
+  const haloSize = glow ? 2.0 : 1.45;
+  const haloGrad = ctx.createRadialGradient(x, y, r * 0.6, x, y, r * haloSize);
+  haloGrad.addColorStop(0, `rgba(${cr},${cg},${cb},${glow ? 0.4 : 0.18})`);
+  haloGrad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+  ctx.beginPath();
+  ctx.arc(x, y, r * haloSize, 0, Math.PI * 2);
+  ctx.fillStyle = haloGrad;
+  ctx.fill();
+
+  // 2. Main coin body — rich 5-stop metallic gradient
+  ctx.shadowBlur = glow ? 28 : 10;
+  ctx.shadowColor = c;
+  const grad = ctx.createRadialGradient(x - r*0.32, y - r*0.38, r*0.02, x + r*0.08, y + r*0.1, r * 1.08);
+  grad.addColorStop(0,    lightenHex(c, 110));
+  grad.addColorStop(0.22, lightenHex(c, 60));
+  grad.addColorStop(0.5,  c);
+  grad.addColorStop(0.78, darkenHex(c, 50));
+  grad.addColorStop(1,    darkenHex(c, 85));
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fillStyle = grad;
   ctx.fill();
-  // Inner ring
+
+  // 3. Outer embossed ring — shadow (bottom-right arc)
+  ctx.shadowBlur = 0;
   ctx.beginPath();
-  ctx.arc(x, y, r * 0.88, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(0,0,0,0.25)';
-  ctx.lineWidth = r * 0.08;
+  ctx.arc(x, y, r - r*0.025, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(0,0,0,0.55)`;
+  ctx.lineWidth = r * 0.055;
   ctx.stroke();
-  // Specular highlight
-  const hlGrad = ctx.createRadialGradient(x - r*0.35, y - r*0.35, 0, x - r*0.35, y - r*0.35, r*0.5);
-  hlGrad.addColorStop(0, 'rgba(255,255,255,0.55)');
+  // light arc (top-left)
+  ctx.beginPath();
+  ctx.arc(x, y, r - r*0.025, Math.PI * 0.8, Math.PI * 1.8);
+  ctx.strokeStyle = `rgba(255,255,255,0.4)`;
+  ctx.lineWidth = r * 0.04;
+  ctx.stroke();
+
+  // 4. Inner ring face (double emboss)
+  ctx.beginPath();
+  ctx.arc(x, y, r * 0.82, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(0,0,0,0.32)`;
+  ctx.lineWidth = r * 0.055;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(x, y, r * 0.82 - r*0.022, Math.PI * 0.78, Math.PI * 1.82);
+  ctx.strokeStyle = `rgba(255,255,255,0.22)`;
+  ctx.lineWidth = r * 0.03;
+  ctx.stroke();
+
+  // 5. Animated rotating specular sheen
+  const sheenA = t % (Math.PI * 2);
+  const sx = x + Math.cos(sheenA) * r * 0.22;
+  const sy = y + Math.sin(sheenA) * r * 0.22;
+  const sheenGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 0.65);
+  sheenGrad.addColorStop(0, `rgba(255,255,255,0.2)`);
+  sheenGrad.addColorStop(1, `rgba(255,255,255,0)`);
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = sheenGrad;
+  ctx.fill();
+
+  // 6. Static specular highlight — crescent top-left
+  const hlGrad = ctx.createRadialGradient(x - r*0.4, y - r*0.4, 0, x - r*0.28, y - r*0.26, r * 0.55);
+  hlGrad.addColorStop(0, 'rgba(255,255,255,0.75)');
+  hlGrad.addColorStop(0.35, 'rgba(255,255,255,0.3)');
   hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.beginPath();
-  ctx.ellipse(x - r*0.3, y - r*0.3, r*0.35, r*0.25, -Math.PI/4, 0, Math.PI*2);
+  ctx.ellipse(x - r*0.28, y - r*0.28, r*0.38, r*0.25, -Math.PI/4.5, 0, Math.PI*2);
   ctx.fillStyle = hlGrad;
   ctx.fill();
-  // Ticker text
+
+  // 7. King coin — orbiting sparkles
+  if (isKing) {
+    const nSpk = 8;
+    for (let i = 0; i < nSpk; i++) {
+      const a = (Math.PI*2/nSpk)*i + t * 1.6;
+      const spkX = x + Math.cos(a) * (r + r*0.14);
+      const spkY = y + Math.sin(a) * (r + r*0.14);
+      const spkA = 0.45 + 0.55 * Math.sin(t * 3.5 + i * 1.1);
+      ctx.save();
+      ctx.globalAlpha = spkA;
+      ctx.fillStyle = '#FFD700';
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#FFD700';
+      drawStar4(ctx, spkX, spkY, Math.max(2.5, r * 0.09));
+      ctx.restore();
+    }
+    // Extra outer glow ring for king
+    ctx.beginPath();
+    ctx.arc(x, y, r * 1.12, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,215,0,${0.15 + 0.1 * Math.sin(t * 2)})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // 8. Ticker text — layered emboss
   ctx.shadowBlur = 0;
-  const fontSize = Math.max(7, r * 0.45);
-  ctx.font = `bold ${fontSize}px 'Exo 2', sans-serif`;
+  const fontSize = Math.max(7, r * (isKing ? 0.34 : 0.42));
+  ctx.font = `900 ${fontSize}px 'Exo 2', sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillText(coinData.ticker, x+1, y+1);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = `rgba(0,0,0,0.65)`;
+  ctx.fillText(coinData.ticker, x + 1.8, y + 1.8);
+  ctx.fillStyle = `rgba(0,0,0,0.3)`;
+  ctx.fillText(coinData.ticker, x + 0.8, y + 0.8);
+  if (isKing) {
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = '#FFD700';
+    ctx.fillStyle = '#FFD700';
+  } else {
+    ctx.fillStyle = 'white';
+  }
   ctx.fillText(coinData.ticker, x, y);
+
   ctx.restore();
+}
+
+function drawStar4(ctx, x, y, size) {
+  ctx.beginPath();
+  for (let i = 0; i < 8; i++) {
+    const a = (Math.PI / 4) * i;
+    const rr = i % 2 === 0 ? size : size * 0.38;
+    if (i === 0) ctx.moveTo(x + Math.cos(a)*rr, y + Math.sin(a)*rr);
+    else ctx.lineTo(x + Math.cos(a)*rr, y + Math.sin(a)*rr);
+  }
+  ctx.closePath();
+  ctx.fill();
 }
 
 function lightenHex(hex, amount) {
@@ -788,10 +943,13 @@ const GameEngine = (() => {
 
   let particles = [];
   let scorePopups = [];
-  let coinBodies = []; // {body, level}
+  let coinBodies = [];
   let highestLevel = 1;
 
   let lastPointerX = null;
+  let shockwaves = [];
+  let screenShake = { x: 0, y: 0, decay: 0 };
+  let comboCount = 0, comboTimer = 0;
 
   function randomCoinLevel() {
     // Weight lower levels more
@@ -896,15 +1054,48 @@ const GameEngine = (() => {
     score += pts;
     if (newLevel > highestLevel) highestLevel = newLevel;
     AuthManager.updateScore(score);
-    document.getElementById('score-display').textContent = score.toLocaleString();
+
+    // Score display with flash animation
+    const scoreEl = document.getElementById('score-display');
+    scoreEl.textContent = score.toLocaleString();
+    scoreEl.classList.remove('score-flash');
+    void scoreEl.offsetWidth;
+    scoreEl.classList.add('score-flash');
+
     if (score > highScore) {
       highScore = score;
       document.getElementById('highscore-display').textContent = highScore.toLocaleString();
     }
+
     spawnParticles(midX, midY, COIN_DATA[newLevel-1].color);
-    scorePopups.push({ x: midX, y: midY, text: '+'+pts, alpha: 1, vy: -1.5 });
+
+    // Score popup — color by tier
+    const popColor = newLevel >= 10 ? '#FFD700' : newLevel >= 7 ? '#EC4899' : newLevel >= 4 ? '#A855F7' : '#60A5FA';
+    scorePopups.push({ x: midX, y: midY - 10, text: '+'+pts, alpha: 1, vy: -2.2, color: popColor, big: newLevel >= 8 });
+
+    // Screen shake for big merges
+    if (newLevel >= 6) {
+      screenShake.decay = Math.min(1.8, (newLevel - 5) * 0.32);
+    }
+
+    // Combo system
+    comboCount++;
+    comboTimer = 90;
+    if (comboCount >= 2) {
+      const badge = document.getElementById('combo-badge');
+      if (badge) {
+        badge.textContent = `${comboCount}✕ COMBO!`;
+        badge.classList.remove('show');
+        void badge.offsetWidth;
+        badge.classList.add('show');
+      }
+      if (comboCount >= 3) {
+        scorePopups.push({ x: W/2, y: midY - 45, text: `${comboCount}✕ COMBO!`, alpha: 1, vy: -1.8, color: '#FF8C00', big: true });
+      }
+    }
+
     AudioEngine.playMerge(newLevel);
-    if (navigator.vibrate) navigator.vibrate(30);
+    if (navigator.vibrate) navigator.vibrate(newLevel >= 6 ? 50 : 25);
     mergeCount++;
     if (mergeCount % 10 === 0) autoSave();
   }
@@ -954,14 +1145,28 @@ const GameEngine = (() => {
   }
 
   function spawnParticles(x, y, color) {
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI * 2 * i) / 8;
-      const speed = 2 + Math.random() * 3;
+    // Spark burst
+    for (let i = 0; i < 16; i++) {
+      const angle = (Math.PI * 2 * i) / 16 + Math.random() * 0.25;
+      const speed = 2.5 + Math.random() * 5;
       particles.push({
-        x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
-        color, alpha: 1, life: 30 + Math.random()*20, r: 4 + Math.random()*4
+        type: 'spark', x, y,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        color, alpha: 1, life: 32 + Math.random()*28, r: 2.5 + Math.random()*3.5
       });
     }
+    // 4-point sparkles
+    for (let i = 0; i < 7; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1.5 + Math.random() * 3.5;
+      particles.push({
+        type: 'sparkle', x, y,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        color, alpha: 1, life: 26 + Math.random()*22, r: 3 + Math.random()*5, rot: Math.random()*Math.PI
+      });
+    }
+    // Ring shockwave
+    shockwaves.push({ x, y, r: 6, maxR: 70, color, alpha: 0.85, life: 24 });
   }
 
   function updateNextPreview() {
@@ -1011,38 +1216,78 @@ const GameEngine = (() => {
     requestAnimationFrame(loop);
     if (!ctx) return;
     frameCount++;
+    _ftime++;
     ctx.clearRect(0, 0, W, H);
     drawContainer();
     drawDangerLine();
     if (currentCoin && canDrop) drawPreviewCoin();
     drawCoins();
+    drawShockwaves();
     updateParticles();
     updateScorePopups();
+    updateComboBadge();
     if (!gameOver && frameCount % 60 === 0) checkGameOver();
     if (frameCount % 1800 === 0) autoSave();
   }
 
   function drawContainer() {
     ctx.save();
-    ctx.fillStyle = 'rgba(255,255,255,0.025)';
-    ctx.strokeStyle = 'rgba(124,58,237,0.5)';
-    ctx.lineWidth = 2;
-    ctx.shadowBlur = 15;
+    // Background gradient fill
+    const bgGrad = ctx.createLinearGradient(0, dangerY, 0, H);
+    bgGrad.addColorStop(0, 'rgba(124,58,237,0.055)');
+    bgGrad.addColorStop(1, 'rgba(30,10,60,0.18)');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, dangerY, W, H - dangerY);
+
+    // Left wall glow
+    const wallPulse = 0.12 + 0.06 * Math.sin(_ftime * 0.04);
+    const lwGrad = ctx.createLinearGradient(0, 0, 18, 0);
+    lwGrad.addColorStop(0, `rgba(124,58,237,${wallPulse})`);
+    lwGrad.addColorStop(1, 'rgba(124,58,237,0)');
+    ctx.fillStyle = lwGrad;
+    ctx.fillRect(0, dangerY, 18, H - dangerY);
+
+    // Right wall glow
+    const rwGrad = ctx.createLinearGradient(W, 0, W - 18, 0);
+    rwGrad.addColorStop(0, `rgba(124,58,237,${wallPulse})`);
+    rwGrad.addColorStop(1, 'rgba(124,58,237,0)');
+    ctx.fillStyle = rwGrad;
+    ctx.fillRect(W - 18, dangerY, 18, H - dangerY);
+
+    // Floor glow
+    const flGrad = ctx.createLinearGradient(0, H, 0, H - 22);
+    flGrad.addColorStop(0, 'rgba(168,85,247,0.38)');
+    flGrad.addColorStop(1, 'rgba(168,85,247,0)');
+    ctx.fillStyle = flGrad;
+    ctx.fillRect(0, H - 22, W, 22);
+
+    // Neon border lines
+    const borderAlpha = 0.42 + 0.18 * Math.sin(_ftime * 0.04);
+    ctx.strokeStyle = `rgba(124,58,237,${borderAlpha})`;
+    ctx.lineWidth = 1.5;
+    ctx.shadowBlur = 20;
     ctx.shadowColor = '#7C3AED';
-    ctx.beginPath();
-    ctx.rect(0, dangerY, W, H - dangerY);
-    ctx.fill();
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(1, dangerY); ctx.lineTo(1, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W - 1, dangerY); ctx.lineTo(W - 1, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, H - 1); ctx.lineTo(W, H - 1); ctx.stroke();
     ctx.restore();
   }
 
   function drawDangerLine() {
+    const pulse = 0.52 + 0.38 * Math.sin(_ftime * 0.09);
     ctx.save();
+    // Red glow zone fill above line
+    const dzGrad = ctx.createLinearGradient(0, 0, 0, dangerY);
+    dzGrad.addColorStop(0, 'rgba(255,59,48,0)');
+    dzGrad.addColorStop(1, `rgba(255,59,48,${pulse * 0.16})`);
+    ctx.fillStyle = dzGrad;
+    ctx.fillRect(0, 0, W, dangerY);
+    // Dashed line
     ctx.strokeStyle = '#FF3B30';
     ctx.lineWidth = 2;
     ctx.setLineDash([8, 6]);
-    ctx.globalAlpha = 0.5 + 0.3 * Math.sin(frameCount * 0.08);
-    ctx.shadowBlur = 8;
+    ctx.globalAlpha = pulse;
+    ctx.shadowBlur = 14;
     ctx.shadowColor = '#FF3B30';
     ctx.beginPath();
     ctx.moveTo(0, dangerY);
@@ -1051,10 +1296,12 @@ const GameEngine = (() => {
     ctx.restore();
     // DANGER label
     ctx.save();
-    ctx.fillStyle = 'rgba(255,59,48,0.5)';
+    ctx.fillStyle = `rgba(255,59,48,${pulse * 0.75})`;
     ctx.font = 'bold 9px Inter, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('— DANGER —', W/2, dangerY - 4);
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#FF3B30';
+    ctx.fillText('— DANGER —', W/2, dangerY - 5);
     ctx.restore();
   }
 
@@ -1062,20 +1309,57 @@ const GameEngine = (() => {
     if (!currentCoin) return;
     const cd = COIN_DATA[currentCoin.level - 1];
     const px = lastPointerX !== null ? Math.max(cd.r+5, Math.min(W-cd.r-5, lastPointerX)) : W/2;
-    // Drop guide line
+    const [cr, cg, cb] = hexToRgb(cd.color);
+
+    // Laser sight — glowing dots fading down
+    const dotCount = 20;
+    const startY = dangerY + cd.r + 4;
+    const spacing = (H - startY - 8) / dotCount;
+    for (let i = 0; i < dotCount; i++) {
+      const dy = startY + i * spacing;
+      const alpha = (1 - i / dotCount) * 0.5;
+      const dsize = Math.max(0.5, 1.6 - (i / dotCount) * 1.1);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = cd.color;
+      ctx.shadowBlur = 7;
+      ctx.shadowColor = cd.color;
+      ctx.beginPath();
+      ctx.arc(px, dy, dsize, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Crosshair at floor
     ctx.save();
-    ctx.strokeStyle = 'rgba(168,85,247,0.3)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4,4]);
-    ctx.beginPath();
-    ctx.moveTo(px, dangerY + cd.r);
-    ctx.lineTo(px, H);
-    ctx.stroke();
+    ctx.globalAlpha = 0.45;
+    ctx.strokeStyle = cd.color;
+    ctx.lineWidth = 1.2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = cd.color;
+    const chy = H - 12;
+    ctx.beginPath(); ctx.moveTo(px - 11, chy); ctx.lineTo(px + 11, chy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px, chy - 7); ctx.lineTo(px, chy + 7); ctx.stroke();
+    // Center dot
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath(); ctx.arc(px, chy, 2, 0, Math.PI*2); ctx.fillStyle = cd.color; ctx.fill();
     ctx.restore();
-    drawCoin(ctx, px, dangerY/2, cd);
+
+    // Preview coin with bob animation
+    const bobY = dangerY / 2 + Math.sin(_ftime * 0.07) * 3.5;
+    drawCoin(ctx, px, bobY, cd);
   }
 
   function drawCoins() {
+    ctx.save();
+    // Apply screen shake translation
+    if (screenShake.decay > 0) {
+      ctx.translate(screenShake.x, screenShake.y);
+      screenShake.x = (Math.random() - 0.5) * screenShake.decay * 9;
+      screenShake.y = (Math.random() - 0.5) * screenShake.decay * 9;
+      screenShake.decay = Math.max(0, screenShake.decay - 0.09);
+      if (screenShake.decay <= 0) { screenShake.x = 0; screenShake.y = 0; }
+    }
     for (const c of coinBodies) {
       const { body, level } = c;
       const pos = body.position;
@@ -1084,31 +1368,41 @@ const GameEngine = (() => {
         c.glowTimer--;
         drawCoin(ctx, pos.x, pos.y, cd, 1, true);
       } else {
-        drawCoin(ctx, pos.x, pos.y, cd);
+        drawCoin(ctx, pos.x, pos.y, cd, 1, false);
       }
-      // Rotation visual
-      ctx.save();
-      ctx.translate(pos.x, pos.y);
-      ctx.rotate(body.angle);
-      ctx.restore();
     }
+    ctx.restore();
   }
 
   function updateParticles() {
     particles = particles.filter(p => p.life > 0);
     for (const p of particles) {
       p.x += p.vx; p.y += p.vy;
-      p.vy += 0.1;
+      p.vy += 0.11;
+      p.vx *= 0.97;
       p.life--;
-      p.alpha = p.life / 50;
+      p.alpha = Math.min(1, p.life / 28);
       ctx.save();
       ctx.globalAlpha = p.alpha;
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 9;
       ctx.shadowColor = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fill();
+      if (p.type === 'sparkle') {
+        if (p.rot !== undefined) p.rot += 0.09;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot || 0);
+        ctx.translate(-p.x, -p.y);
+        drawStar4(ctx, p.x, p.y, p.r);
+      } else {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+        // trailing ghost
+        ctx.globalAlpha = p.alpha * 0.28;
+        ctx.beginPath();
+        ctx.arc(p.x - p.vx*1.8, p.y - p.vy*1.8, p.r * 0.55, 0, Math.PI*2);
+        ctx.fill();
+      }
       ctx.restore();
     }
   }
@@ -1117,16 +1411,54 @@ const GameEngine = (() => {
     scorePopups = scorePopups.filter(p => p.alpha > 0);
     for (const p of scorePopups) {
       p.y += p.vy;
-      p.alpha -= 0.025;
+      p.vy *= 0.96;
+      p.alpha -= 0.021;
       ctx.save();
       ctx.globalAlpha = p.alpha;
-      ctx.fillStyle = '#FFD700';
-      ctx.font = 'bold 14px Orbitron, monospace';
+      const fsize = p.big ? 20 : 15;
+      ctx.font = `900 ${fsize}px 'Orbitron', monospace`;
       ctx.textAlign = 'center';
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = p.color || '#FFD700';
+      ctx.fillStyle = p.color || '#FFD700';
       ctx.fillText(p.text, p.x, p.y);
       ctx.restore();
+    }
+  }
+
+  function drawShockwaves() {
+    shockwaves = shockwaves.filter(s => s.life > 0);
+    for (const s of shockwaves) {
+      s.r += (s.maxR - s.r) * 0.18;
+      s.life--;
+      s.alpha = s.life / 24;
+      const [cr, cg, cb] = hexToRgb(s.color);
+      ctx.save();
+      ctx.globalAlpha = s.alpha * 0.75;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.strokeStyle = `rgb(${cr},${cg},${cb})`;
+      ctx.lineWidth = 3.5;
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = s.color;
+      ctx.stroke();
+      ctx.globalAlpha = s.alpha * 0.25;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * 0.55, 0, Math.PI*2);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function updateComboBadge() {
+    if (comboTimer > 0) {
+      comboTimer--;
+      if (comboTimer === 0) {
+        comboCount = 0;
+        const badge = document.getElementById('combo-badge');
+        if (badge) badge.classList.remove('show');
+      }
     }
   }
 
@@ -1137,6 +1469,11 @@ const GameEngine = (() => {
     coinBodies = [];
     particles = [];
     scorePopups = [];
+    shockwaves = [];
+    screenShake = { x: 0, y: 0, decay: 0 };
+    comboCount = 0; comboTimer = 0;
+    const badge = document.getElementById('combo-badge');
+    if (badge) badge.classList.remove('show');
     score = 0;
     gameOver = false;
     canDrop = true;
@@ -1192,25 +1529,82 @@ const GameEngine = (() => {
 })();
 
 // ============================================================
-// STARFIELD
+// STARFIELD — with nebulae, twinkling, shooting stars
 // ============================================================
 function initStarfield() {
   const c = document.getElementById('stars-bg');
   const ctx = c.getContext('2d');
   c.width = window.innerWidth; c.height = window.innerHeight;
-  const stars = Array.from({length:80}, () => ({
+
+  const stars = Array.from({length: 130}, () => ({
     x: Math.random()*c.width, y: Math.random()*c.height,
-    r: Math.random()*1.5+0.3, v: Math.random()*0.3+0.05
+    r: Math.random()*1.9 + 0.2,
+    v: Math.random()*0.22 + 0.03,
+    twinkle: Math.random()*Math.PI*2,
+    twinkleSpeed: 0.016 + Math.random()*0.042,
+    color: ['#ffffff','#ffe8ff','#e8ecff','#fff8d0','#d8f0ff'][Math.floor(Math.random()*5)]
   }));
+
+  const nebulae = [
+    { x: c.width*0.2,  y: c.height*0.28, r: 210, cr:124, cg:58,  cb:237, a:0.065 },
+    { x: c.width*0.78, y: c.height*0.62, r: 175, cr:236, cg:72,  cb:153, a:0.052 },
+    { x: c.width*0.5,  y: c.height*0.1,  r: 150, cr:59,  cg:130, cb:246, a:0.048 },
+    { x: c.width*0.12, y: c.height*0.82, r: 140, cr:16,  cg:185, cb:129, a:0.038 },
+  ];
+
+  let shootX=-200, shootY=-200, shootVx=0, shootVy=0, shootAlpha=0, shootTimer=160;
+
   function drawStars() {
-    ctx.clearRect(0,0,c.width,c.height);
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    // Nebulae
+    for (const n of nebulae) {
+      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+      g.addColorStop(0,   `rgba(${n.cr},${n.cg},${n.cb},${n.a})`);
+      g.addColorStop(0.55,`rgba(${n.cr},${n.cg},${n.cb},${n.a*0.45})`);
+      g.addColorStop(1,   `rgba(${n.cr},${n.cg},${n.cb},0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+    }
+
+    // Shooting star
+    shootTimer--;
+    if (shootTimer <= 0) {
+      shootX = Math.random()*c.width*0.65;
+      shootY = Math.random()*c.height*0.38;
+      const ang = Math.PI/7 + Math.random()*Math.PI/5;
+      const spd = 9 + Math.random()*8;
+      shootVx = Math.cos(ang)*spd; shootVy = Math.sin(ang)*spd;
+      shootAlpha = 1;
+      shootTimer = 200 + Math.floor(Math.random()*380);
+    }
+    if (shootAlpha > 0) {
+      ctx.save();
+      ctx.globalAlpha = shootAlpha;
+      const sg = ctx.createLinearGradient(shootX, shootY, shootX-shootVx*9, shootY-shootVy*9);
+      sg.addColorStop(0, 'rgba(255,255,255,0.95)');
+      sg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = sg; ctx.lineWidth = 2;
+      ctx.shadowBlur = 10; ctx.shadowColor = 'white';
+      ctx.beginPath(); ctx.moveTo(shootX, shootY);
+      ctx.lineTo(shootX - shootVx*9, shootY - shootVy*9); ctx.stroke();
+      ctx.restore();
+      shootX += shootVx; shootY += shootVy; shootAlpha -= 0.023;
+      if (shootX > c.width || shootY > c.height) shootAlpha = 0;
+    }
+
+    // Stars with twinkling
     for (const s of stars) {
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fill();
+      s.twinkle += s.twinkleSpeed;
+      const alpha = 0.3 + 0.7 * Math.abs(Math.sin(s.twinkle));
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = s.color;
+      if (s.r > 1.3) { ctx.shadowBlur = 6; ctx.shadowColor = s.color; }
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
       s.y -= s.v;
-      if (s.y < 0) { s.y = c.height; s.x = Math.random()*c.width; }
+      if (s.y < -2) { s.y = c.height + 2; s.x = Math.random()*c.width; }
     }
     requestAnimationFrame(drawStars);
   }
