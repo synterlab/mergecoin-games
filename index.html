@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>MergeCoin.games — Orynth Ecosystem</title>
-<meta name="description" content="Merge Orynth ecosystem tokens in this addictive physics game. Drop, merge, and reach the ORY King!">
+<title>MergeCoin.games — Merge Crypto Tokens</title>
+<meta name="description" content="Drop, merge, and stack crypto tokens in this addictive physics game. Race up the leaderboard!">
 <meta property="og:title" content="MergeCoin.games">
 <meta property="og:url" content="https://mergecoin.games">
-<meta property="og:description" content="Merge Orynth ecosystem tokens. Drop, merge, reach the ORYNTH KING!">
+<meta property="og:description" content="Drop and merge crypto tokens. Stack your way to the top!">
 <link rel="canonical" href="https://mergecoin.games">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%237C3AED'/><text y='.9em' font-size='60' x='50%' text-anchor='middle' dominant-baseline='middle' fill='%23FFD700' font-weight='bold'>M</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23061625'/><circle cx='42' cy='50' r='26' fill='%2306B6D4' opacity='0.92'/><circle cx='58' cy='50' r='26' fill='%23F59E0B' opacity='0.92'/><text y='.9em' font-size='30' x='50%' text-anchor='middle' dominant-baseline='middle' fill='white' font-weight='bold' font-family='Arial,sans-serif'>MC</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Inter:wght@400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -17,18 +17,18 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg-dark: #0D0221;
-    --bg-mid: #1A0533;
-    --panel-bg: #1E0A3C;
-    --accent: #A855F7;
-    --accent-bright: #7C3AED;
+    --bg-dark: #030D18;
+    --bg-mid: #061625;
+    --panel-bg: #08202F;
+    --accent: #F59E0B;
+    --accent-bright: #D97706;
     --gold: #FFD700;
     --danger: #FF3B30;
-    --text: #E2D9F3;
-    --text-dim: #8B7FA8;
-    --border: rgba(168,85,247,0.3);
+    --text: #E8EDF2;
+    --text-dim: #7A92A5;
+    --border: rgba(245,158,11,0.25);
     --glass: rgba(255,255,255,0.04);
-    --glass-border: rgba(124,58,237,0.5);
+    --glass-border: rgba(245,158,11,0.35);
   }
   html, body {
     width: 100%; height: 100%;
@@ -88,7 +88,7 @@
     transition: all 0.2s;
     color: var(--accent);
   }
-  .icon-btn:hover { background: rgba(168,85,247,0.15); border-color: var(--accent); }
+  .icon-btn:hover { background: rgba(245,158,11,0.15); border-color: var(--accent); }
   #user-avatar {
     width: 32px; height: 32px;
     border-radius: 50%;
@@ -121,7 +121,7 @@
   #next-preview {
     display: flex; align-items: center; gap: 8px;
     padding: 4px 12px;
-    background: rgba(124,58,237,0.15);
+    background: rgba(217,119,6,0.15);
     border: 1px solid var(--border);
     border-radius: 20px;
     font-size: 0.7rem;
@@ -146,7 +146,7 @@
     position: absolute;
     top: 8px; right: 8px;
     font-size: 0.65rem;
-    color: rgba(168,85,247,0.7);
+    color: rgba(245,158,11,0.7);
     font-family: 'Orbitron', monospace;
     pointer-events: none;
   }
@@ -173,8 +173,8 @@
     display: flex; align-items: center; justify-content: center; gap: 6px;
     transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
   }
-  .action-btn:hover { background: rgba(168,85,247,0.15); border-color: var(--accent); transform: translateY(-1px); }
-  .action-btn.primary { background: linear-gradient(135deg, var(--accent-bright), #6D28D9); border-color: transparent; }
+  .action-btn:hover { background: rgba(245,158,11,0.15); border-color: var(--accent); transform: translateY(-1px); }
+  .action-btn.primary { background: linear-gradient(135deg, var(--accent-bright), #B45309); border-color: transparent; }
   .action-btn.primary:hover { opacity: 0.9; }
 
   /* Modal base */
@@ -196,7 +196,7 @@
     width: 90%; max-width: 360px;
     transform: translateY(30px);
     transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow: 0 0 40px rgba(124,58,237,0.3);
+    box-shadow: 0 0 40px rgba(217,119,6,0.3);
   }
   .modal-overlay.active .modal-card { transform: translateY(0); }
   .modal-title {
@@ -236,7 +236,7 @@
     transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
   }
   .btn-full:hover { transform: translateY(-1px); }
-  .btn-full.btn-primary { background: linear-gradient(135deg, var(--accent-bright), #6D28D9); color: white; }
+  .btn-full.btn-primary { background: linear-gradient(135deg, var(--accent-bright), #B45309); color: white; }
   .btn-full.btn-secondary { background: var(--glass); border: 1px solid var(--border); color: var(--text); }
   .btn-full.btn-ghost { background: transparent; color: var(--text-dim); font-size: 0.85rem; }
   .modal-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
@@ -383,8 +383,8 @@
   @keyframes logoShimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
   #header-logo { background-size: 250%; animation: logoShimmer 4s ease infinite; }
   @keyframes neonBorderPulse {
-    0%,100% { box-shadow: 0 0 18px rgba(124,58,237,0.12) inset; }
-    50%      { box-shadow: 0 0 30px rgba(168,85,247,0.22) inset; }
+    0%,100% { box-shadow: 0 0 18px rgba(217,119,6,0.12) inset; }
+    50%      { box-shadow: 0 0 30px rgba(245,158,11,0.22) inset; }
   }
   #header { animation: neonBorderPulse 3.5s ease-in-out infinite; }
   @keyframes scoreFlash {
@@ -405,13 +405,13 @@
   }
   #combo-badge.show { opacity: 1; transform: translateX(-50%) scale(1); }
   .action-btn.primary {
-    box-shadow: 0 0 22px rgba(124,58,237,0.5), inset 0 1px 0 rgba(255,255,255,0.18);
+    box-shadow: 0 0 22px rgba(217,119,6,0.5), inset 0 1px 0 rgba(255,255,255,0.18);
   }
   .action-btn.primary:hover {
-    box-shadow: 0 0 38px rgba(168,85,247,0.8), inset 0 1px 0 rgba(255,255,255,0.25);
+    box-shadow: 0 0 38px rgba(245,158,11,0.8), inset 0 1px 0 rgba(255,255,255,0.25);
   }
   .modal-card {
-    box-shadow: 0 0 65px rgba(124,58,237,0.5), 0 0 130px rgba(124,58,237,0.15),
+    box-shadow: 0 0 65px rgba(217,119,6,0.5), 0 0 130px rgba(217,119,6,0.15),
                 inset 0 1px 0 rgba(255,255,255,0.1) !important;
   }
   @keyframes goScorePop {
@@ -421,8 +421,8 @@
   }
   #gameover-score { animation: goScorePop 0.75s cubic-bezier(0.34,1.56,0.64,1) both 0.35s; }
   #next-preview { box-shadow: 0 0 18px rgba(124,58,247,0.4); }
-  #score-bar { box-shadow: 0 2px 24px rgba(124,58,237,0.18) inset; }
-  #action-bar { box-shadow: 0 -2px 20px rgba(124,58,237,0.12) inset; }
+  #score-bar { box-shadow: 0 2px 24px rgba(217,119,6,0.18) inset; }
+  #action-bar { box-shadow: 0 -2px 20px rgba(217,119,6,0.12) inset; }
 
   /* ─── INTRO / SPLASH SCREEN ─────────────────────────── */
   #intro-screen {
@@ -441,7 +441,7 @@
     filter: blur(100px); pointer-events: none;
     animation: introOrbFloat 10s ease-in-out infinite;
   }
-  .intro-orb-1 { width: 480px; height: 480px; background: rgba(124,58,237,0.22); top: -120px; left: -100px; animation-duration: 8s; }
+  .intro-orb-1 { width: 480px; height: 480px; background: rgba(217,119,6,0.22); top: -120px; left: -100px; animation-duration: 8s; }
   .intro-orb-2 { width: 360px; height: 360px; background: rgba(236,72,153,0.15); bottom: -80px; right: -80px; animation-duration: 11s; animation-delay: -3s; }
   .intro-orb-3 { width: 300px; height: 300px; background: rgba(255,215,0,0.08); top: 40%; left: 35%; animation-duration: 14s; animation-delay: -6s; }
   .intro-orb-4 { width: 200px; height: 200px; background: rgba(20,184,166,0.1); top: 10%; right: 10%; animation-duration: 9s; animation-delay: -2s; }
@@ -454,8 +454,8 @@
   /* Grid overlay texture */
   #intro-grid {
     position: absolute; inset: 0; pointer-events: none; opacity: 0.025;
-    background-image: linear-gradient(rgba(168,85,247,1) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(168,85,247,1) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(245,158,11,1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(245,158,11,1) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -468,26 +468,26 @@
   }
   #intro-studio-badge {
     font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 400;
-    letter-spacing: 0.3em; color: rgba(168,85,247,0.45);
+    letter-spacing: 0.3em; color: rgba(245,158,11,0.45);
     text-transform: uppercase; margin-bottom: 28px;
     animation: introFadeUp 0.7s ease 0.1s both;
   }
   #intro-gem {
     width: 88px; height: 88px; border-radius: 24px;
-    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 55%, #FFD700 100%);
+    background: linear-gradient(135deg, #D97706 0%, #EC4899 55%, #FFD700 100%);
     display: flex; align-items: center; justify-content: center;
     font-size: 2.6rem; margin: 0 auto 22px;
-    box-shadow: 0 0 0 0 rgba(124,58,237,0.4);
+    box-shadow: 0 0 0 0 rgba(217,119,6,0.4);
     animation: introFadeUp 0.7s ease 0.3s both, introGemPulse 2.8s ease-in-out 1.2s infinite;
   }
   @keyframes introGemPulse {
-    0%,100% { box-shadow: 0 0 35px rgba(124,58,237,0.5), 0 0 70px rgba(124,58,237,0.15); transform: scale(1) rotate(0deg); }
-    50%      { box-shadow: 0 0 65px rgba(168,85,247,0.75), 0 0 130px rgba(168,85,247,0.25); transform: scale(1.04) rotate(2deg); }
+    0%,100% { box-shadow: 0 0 35px rgba(217,119,6,0.5), 0 0 70px rgba(217,119,6,0.15); transform: scale(1) rotate(0deg); }
+    50%      { box-shadow: 0 0 65px rgba(245,158,11,0.75), 0 0 130px rgba(245,158,11,0.25); transform: scale(1.04) rotate(2deg); }
   }
   #intro-title {
     font-family: 'Exo 2', sans-serif; font-weight: 900;
     font-size: clamp(3rem, 13vw, 4.5rem); line-height: 1; letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #C084FC 0%, #EC4899 30%, #FFD700 65%, #A855F7 100%);
+    background: linear-gradient(135deg, #FCD34D 0%, #EC4899 30%, #FFD700 65%, #F59E0B 100%);
     background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     animation: introFadeUp 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s both, introTitleShimmer 5s linear 1.5s infinite;
     margin-bottom: 2px;
@@ -495,14 +495,14 @@
   @keyframes introTitleShimmer { to { background-position: 300% 50%; } }
   #intro-dotgames {
     font-family: 'Orbitron', monospace; font-weight: 700; font-size: 1.05rem;
-    color: rgba(168,85,247,0.65); letter-spacing: 0.1em;
+    color: rgba(245,158,11,0.65); letter-spacing: 0.1em;
     animation: introFadeUp 0.7s ease 0.7s both; margin-bottom: 20px;
   }
   #intro-ecosystem-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 7px 18px; border: 1px solid rgba(168,85,247,0.35);
-    border-radius: 24px; background: rgba(124,58,237,0.1);
-    font-size: 0.68rem; color: rgba(168,85,247,0.8);
+    padding: 7px 18px; border: 1px solid rgba(245,158,11,0.35);
+    border-radius: 24px; background: rgba(217,119,6,0.1);
+    font-size: 0.68rem; color: rgba(245,158,11,0.8);
     letter-spacing: 0.12em; font-family: 'Orbitron', monospace;
     animation: introFadeUp 0.7s ease 0.9s both; margin-bottom: 30px;
   }
@@ -519,7 +519,7 @@
   #btn-intro-play {
     width: 100%; max-width: 290px;
     padding: 19px 32px; border: none; border-radius: 50px;
-    background: linear-gradient(135deg, #7C3AED 0%, #9333EA 50%, #6D28D9 100%);
+    background: linear-gradient(135deg, #D97706 0%, #D97706 50%, #B45309 100%);
     color: white; font-family: 'Exo 2', sans-serif; font-weight: 900;
     font-size: 1.25rem; letter-spacing: 0.1em; text-transform: uppercase;
     cursor: pointer; position: relative; overflow: hidden;
@@ -536,15 +536,15 @@
     0% { transform: translateX(-100%); } 30%,100% { transform: translateX(150%); }
   }
   @keyframes playGlow {
-    0%,100% { box-shadow: 0 0 30px rgba(124,58,237,0.55), 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
-    50%      { box-shadow: 0 0 55px rgba(168,85,247,0.8),  0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.25); }
+    0%,100% { box-shadow: 0 0 30px rgba(217,119,6,0.55), 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+    50%      { box-shadow: 0 0 55px rgba(245,158,11,0.8),  0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.25); }
   }
   #btn-intro-play:hover { transform: translateY(-3px) scale(1.02); }
   #btn-intro-play:active { transform: scale(0.97); }
 
   #intro-bottom-text {
     font-family: 'Orbitron', monospace; font-size: 0.58rem;
-    color: rgba(168,85,247,0.28); letter-spacing: 0.18em;
+    color: rgba(245,158,11,0.28); letter-spacing: 0.18em;
     animation: introFadeUp 0.7s ease 1.5s both;
   }
 
@@ -583,11 +583,11 @@
   <div class="intro-orb intro-orb-4"></div>
   <div id="intro-grid"></div>
   <div id="intro-content">
-    <div id="intro-studio-badge">✦ &nbsp; SYNTERLAB STUDIOS &nbsp; ✦</div>
-    <div id="intro-gem">🔮</div>
+    <div id="intro-studio-badge">✦ &nbsp; FREE TO PLAY &nbsp; ✦</div>
+    <div id="intro-gem">🪙</div>
     <div id="intro-title">MERGECOIN</div>
     <div id="intro-dotgames">.GAMES</div>
-    <div id="intro-ecosystem-badge">ORYNTH ECOSYSTEM · OFFICIAL GAME</div>
+    <div id="intro-ecosystem-badge">CRYPTO MERGE · PHYSICS GAME</div>
     <div id="intro-coin-strip">
       <canvas id="intro-coin-canvas" width="320" height="68"></canvas>
     </div>
@@ -599,7 +599,7 @@
 <div style="display:flex;justify-content:center;align-items:flex-start;width:100%;height:100vh;">
 <div id="app">
   <div id="header">
-    <div id="header-logo">🔮 MergeCoin<span>.games</span></div>
+    <div id="header-logo"><svg style="display:inline;vertical-align:middle;margin-right:5px;margin-top:-2px" width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="20" r="13" fill="#06B6D4" opacity="0.9"/><circle cx="24" cy="20" r="13" fill="#F59E0B" opacity="0.9"/></svg>MergeCoin<span>.games</span></div>
     <div id="header-right">
       <div class="icon-btn" id="btn-menu" title="Settings">☰</div>
       <div id="user-avatar" id="btn-user" title="Account">?</div>
@@ -643,7 +643,7 @@
 <!-- Login Modal -->
 <div class="modal-overlay" id="login-modal">
   <div class="modal-card">
-    <div class="modal-title">🔮 MergeCoin</div>
+    <div class="modal-title">🪙 MergeCoin</div>
     <div class="error-msg" id="login-error"></div>
     <input class="input-field" id="login-username" type="text" placeholder="Username" autocomplete="off">
     <input class="input-field" id="login-password" type="password" placeholder="Password" autocomplete="off">
@@ -722,9 +722,7 @@
   <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
     <div class="settings-row-label">ℹ️ About</div>
     <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
-      MergeCoin.games — The official Orynth Ecosystem game.<br>
-      Merge all 15 tokens to become the ORYNTH KING!<br>
-      <a href="https://orynth.dev" target="_blank" style="color:var(--accent);font-weight:600;">orynth.dev ↗</a>
+      MergeCoin.games — Drop, merge, and dominate.<br>Stack all 15 tokens to reach the ultimate merge!
     </div>
   </div>
   <div class="settings-row">
