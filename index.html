@@ -654,6 +654,13 @@
     animation: introFadeUp 0.7s ease 1.8s both;
     margin-top: 10px;
   }
+  #orynth-badge {
+    animation: introFadeUp 0.7s ease 2.0s both;
+    margin-top: 14px;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+  }
+  #orynth-badge:hover { opacity: 1; }
   @keyframes introFadeUp {
     from { opacity: 0; transform: translateY(22px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -733,6 +740,11 @@
     </div>
     <button id="btn-intro-play">▶ &nbsp; PLAY NOW</button>
     <div id="intro-bottom-text">15 TOKENS &nbsp;·&nbsp; MERGE TO WIN &nbsp;·&nbsp; FREE TO PLAY</div>
+    <div id="orynth-badge">
+      <a href="https://orynth.dev/projects/mergecoin-games" target="_blank" rel="noopener">
+        <img src="https://orynth.dev/api/badge/mergecoin-games?theme=dark&style=default" alt="Featured on Orynth" width="200" height="62" />
+      </a>
+    </div>
   </div>
 </div>
 
