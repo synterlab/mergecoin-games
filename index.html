@@ -777,7 +777,7 @@
     width: 220px; height: 220px; background: transparent;
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 18px;
-    animation: introFadeUp 0.7s ease 0.3s both, introGemPulse 3s ease-in-out 1.2s infinite;
+    animation: introGemIn 0.72s cubic-bezier(0.34,1.56,0.64,1) 0.18s both, introGemPulse 3s ease-in-out 1.2s infinite;
   }
   #intro-logo-img {
     width: 100%; height: 100%;
@@ -1100,6 +1100,7 @@
   /* ─── Score value brightness boost ─── */
   .score-value {
     text-shadow: 0 0 24px rgba(255,180,0,0.60), 0 0 50px rgba(255,150,0,0.28) !important;
+    transition: color 0.15s ease;
   }
 
   /* ─── Next preview upgrade ─── */
@@ -1107,6 +1108,203 @@
     background: rgba(255,255,255,0.04) !important;
     border: 1px solid rgba(255,180,0,0.30) !important;
     box-shadow: 0 0 20px rgba(255,180,0,0.10), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    position: relative; overflow: hidden;
+  }
+  #next-preview::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%);
+    pointer-events: none; border-radius: inherit;
+  }
+
+  /* ════════════════════════════════════════════
+     VISUAL OVERHAUL — Addictiveness Layer
+  ════════════════════════════════════════════ */
+
+  /* ─── Merge Flash Overlay ─── */
+  #merge-flash {
+    position: fixed; inset: 0; z-index: 190; pointer-events: none;
+    opacity: 0; border-radius: 0;
+  }
+  #merge-flash.active {
+    animation: mergeFlashAnim 0.65s cubic-bezier(0.22,1,0.36,1) forwards;
+  }
+  @keyframes mergeFlashAnim {
+    0%   { opacity: 1; }
+    18%  { opacity: 0.9; }
+    100% { opacity: 0; }
+  }
+
+  /* ─── Coin body intro bounce ─── */
+  @keyframes coinDrop {
+    0%   { transform: scale(1.18); }
+    55%  { transform: scale(0.88); }
+    78%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+
+  /* ─── Score bar flash on merge ─── */
+  @keyframes scoreBarPulse {
+    0%   { box-shadow: 0 2px 20px rgba(212,20,90,0.08) inset; }
+    35%  { box-shadow: 0 0 0 1px rgba(255,180,0,0.45), 0 2px 40px rgba(255,180,0,0.20) inset, 0 0 60px rgba(212,20,90,0.12) inset; }
+    100% { box-shadow: 0 2px 20px rgba(212,20,90,0.08) inset; }
+  }
+  #score-bar.score-pulse { animation: scoreBarPulse 0.45s ease-out; }
+
+  /* ─── Enhanced score flash (bigger boom) ─── */
+  @keyframes scoreFlash {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.55); color: #fff; text-shadow: 0 0 28px #FFD700, 0 0 55px #FFD700, 0 0 90px rgba(255,180,0,0.5); }
+    100% { transform: scale(1); }
+  }
+
+  /* ─── NEW RECORD badge — more dramatic ─── */
+  #new-record-badge {
+    display: none; margin: 0 auto 10px;
+    font-family: 'Exo 2', sans-serif; font-weight: 900;
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #FFD700;
+    background: linear-gradient(135deg, rgba(255,210,0,0.18), rgba(255,140,0,0.12));
+    border: 1px solid rgba(255,200,0,0.55);
+    border-radius: 22px; padding: 5px 18px;
+    text-shadow: 0 0 20px rgba(255,210,0,1), 0 0 40px rgba(255,150,0,0.7), 0 0 70px rgba(255,100,0,0.35);
+    box-shadow: 0 0 30px rgba(255,180,0,0.25), 0 0 60px rgba(255,120,0,0.12), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  #new-record-badge.show {
+    display: inline-block;
+    animation: newRecordPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both, newRecordGlow 1.5s ease-in-out 0.7s infinite;
+  }
+  @keyframes newRecordPop {
+    0%   { transform: scale(0.3) rotate(-12deg); opacity: 0; }
+    60%  { transform: scale(1.18) rotate(2deg); }
+    80%  { transform: scale(0.96) rotate(-1deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  @keyframes newRecordGlow {
+    0%,100% { box-shadow: 0 0 30px rgba(255,180,0,0.25), 0 0 60px rgba(255,120,0,0.12); }
+    50%      { box-shadow: 0 0 50px rgba(255,210,0,0.55), 0 0 100px rgba(255,150,0,0.28); }
+  }
+
+  /* ─── Game over score — bigger and brighter ─── */
+  #gameover-score {
+    font-size: 3.0rem !important; line-height: 1 !important;
+    text-shadow: 0 0 40px rgba(255,180,0,0.9), 0 0 80px rgba(255,150,0,0.6), 0 0 140px rgba(255,120,0,0.3) !important;
+    animation: goScorePop 0.75s cubic-bezier(0.34,1.56,0.64,1) both 0.35s !important;
+  }
+  .gameover-label {
+    font-family: 'Orbitron', monospace; font-size: 0.52rem !important; font-weight: 700;
+    letter-spacing: 0.42em !important; text-transform: uppercase;
+    background: linear-gradient(90deg, #D4145A, #FF4820, #FF8C00) !important;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 14px rgba(212,20,90,0.55)) !important;
+    animation: gameoverLabelIn 0.5s ease both !important;
+  }
+  @keyframes gameoverLabelIn {
+    from { opacity: 0; letter-spacing: 0.62em; }
+    to   { opacity: 1; letter-spacing: 0.42em; }
+  }
+
+  /* ─── Combo badge color escalation by level ─── */
+  #combo-badge { will-change: transform, opacity, filter; }
+  #combo-badge.combo-hot {
+    background: linear-gradient(160deg, #FF8C20 0%, #FF4500 50%, #E8151E 100%) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+    filter: drop-shadow(0 0 20px rgba(255,100,0,0.9)) drop-shadow(0 0 44px rgba(255,50,0,0.55)) !important;
+  }
+  #combo-badge.combo-ultra {
+    background: linear-gradient(160deg, #FFE566 0%, #FFD700 40%, #FF8C20 100%) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+    filter: drop-shadow(0 0 26px rgba(255,215,0,1)) drop-shadow(0 0 55px rgba(255,150,0,0.75)) drop-shadow(0 0 90px rgba(255,80,0,0.45)) !important;
+    animation: comboUltraPulse 0.5s ease-in-out infinite alternate !important;
+  }
+  @keyframes comboUltraPulse {
+    from { transform: translateX(-50%) scale(1); }
+    to   { transform: translateX(-50%) scale(1.06); }
+  }
+
+  /* ─── Milestone banner (MEGA MERGE etc.) ─── */
+  .toast.mega {
+    background: linear-gradient(135deg, rgba(180,10,60,0.96), rgba(220,80,10,0.96)) !important;
+    border: 1px solid rgba(255,180,0,0.55) !important;
+    box-shadow: 0 0 40px rgba(212,20,90,0.45), 0 0 80px rgba(255,100,0,0.2) !important;
+    font-size: 1.0rem !important; font-weight: 900 !important;
+    letter-spacing: 0.12em !important; color: #FFF8E0 !important;
+    padding: 14px 28px !important;
+    animation: toastSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1) both, toastMegaGlow 0.8s ease-in-out 0.4s infinite alternate !important;
+  }
+  @keyframes toastMegaGlow {
+    from { box-shadow: 0 0 40px rgba(212,20,90,0.45), 0 0 80px rgba(255,100,0,0.2); }
+    to   { box-shadow: 0 0 60px rgba(255,80,20,0.65), 0 0 120px rgba(255,140,0,0.3); }
+  }
+
+  /* ─── Drop guide glow enhancement ─── */
+  @keyframes dropGuideShimmer {
+    0%,100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+  }
+
+  /* ─── Intro logo entrance ─── */
+  @keyframes introGemIn {
+    0%   { transform: scale(0.45) rotate(-10deg); filter: brightness(2.2) saturate(1.8); opacity: 0; }
+    70%  { transform: scale(1.08) rotate(2deg); filter: brightness(1.1) saturate(1.1); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); filter: brightness(1) saturate(1); opacity: 1; }
+  }
+
+  /* ─── Button press — snappier ─── */
+  .btn-full:active {
+    transform: scale(0.94) !important;
+    transition: transform 0.06s ease !important;
+  }
+  .btn-full.btn-primary:active {
+    box-shadow: 0 2px 12px rgba(212,20,90,0.4) !important;
+  }
+
+  /* ─── Score value new high flash ─── */
+  @keyframes newHighGlow {
+    0%   { color: #FFD700; text-shadow: 0 0 40px #FFD700, 0 0 80px #FF8C00, 0 0 120px rgba(255,150,0,0.5); transform: scale(1.1); }
+    100% { }
+  }
+  .score-value.is-new-high {
+    animation: newHighGlow 0.8s ease-out both;
+  }
+
+  /* ─── Highscore label pulse ─── */
+  @keyframes highscorePop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.25); color: #FFD700; }
+    100% { transform: scale(1); }
+  }
+  #highscore-display.new-best { animation: highscorePop 0.55s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* ─── Canvas wall pulse — more dramatic ─── */
+  @keyframes canvasWallPulse {
+    0%,100% {
+      box-shadow:
+        inset 24px 0 100px rgba(212,20,90,0.22), inset -24px 0 100px rgba(212,20,90,0.22),
+        inset 0 0 80px rgba(80,0,120,0.08),
+        -8px 0 44px rgba(212,20,90,0.55), 8px 0 44px rgba(212,20,90,0.55),
+        0 0 80px rgba(212,20,90,0.10), 0 8px 40px rgba(255,100,0,0.10);
+    }
+    50% {
+      box-shadow:
+        inset 30px 0 140px rgba(212,20,90,0.42), inset -30px 0 140px rgba(212,20,90,0.42),
+        inset 0 0 110px rgba(100,0,160,0.18),
+        -10px 0 60px rgba(212,20,90,0.75), 10px 0 60px rgba(212,20,90,0.75),
+        0 0 110px rgba(212,20,90,0.18), 0 10px 50px rgba(255,130,0,0.18);
+    }
+  }
+
+  /* ─── Header glow ─── */
+  #header {
+    background: linear-gradient(180deg, rgba(18,10,7,1) 0%, rgba(12,7,5,0.99) 100%) !important;
+    box-shadow: 0 1px 0 rgba(212,20,90,0.22), 0 4px 30px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(212,20,90,0.10), 0 0 40px rgba(212,20,90,0.06) !important;
+  }
+
+  /* ─── Score section label upgrade ─── */
+  .score-label {
+    color: rgba(255,180,0,0.48) !important;
+    letter-spacing: 0.14em !important;
+    font-size: 0.44rem !important;
+    text-shadow: 0 0 10px rgba(255,180,0,0.28) !important;
   }
 </style>
 </head>
@@ -1369,6 +1567,7 @@
   </div>
 </div>
 
+<div id="merge-flash"></div>
 <div id="toast-container"></div>
 
 <script>
@@ -2133,39 +2332,80 @@ const GameEngine = (() => {
     if (newLevel > highestLevel) highestLevel = newLevel;
     AuthManager.updateScore(score);
 
+    // Animated score count-up
     const scoreEl = document.getElementById('score-display');
-    scoreEl.textContent = score.toLocaleString();
-    scoreEl.classList.remove('score-flash');
-    void scoreEl.offsetWidth;
-    scoreEl.classList.add('score-flash');
+    const prevScore = parseInt(scoreEl.textContent.replace(/[,.\s]/g, '') || '0');
+    const targetScore = score;
+    const countDur = Math.min(380, 100 + newLevel * 20);
+    const countStart = performance.now();
+    (function countUp(now) {
+      const t = Math.min((now - countStart) / countDur, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      scoreEl.textContent = Math.round(prevScore + (targetScore - prevScore) * eased).toLocaleString();
+      if (t < 1) { requestAnimationFrame(countUp); }
+      else {
+        scoreEl.textContent = targetScore.toLocaleString();
+        scoreEl.classList.remove('score-flash'); void scoreEl.offsetWidth; scoreEl.classList.add('score-flash');
+        if (isNewHighScore) { scoreEl.classList.add('is-new-high'); setTimeout(() => scoreEl.classList.remove('is-new-high'), 900); }
+      }
+    })(performance.now());
+
+    // Pulse score bar
+    const sb = document.getElementById('score-bar');
+    if (sb) { sb.classList.remove('score-pulse'); void sb.offsetWidth; sb.classList.add('score-pulse'); setTimeout(() => sb.classList.remove('score-pulse'), 480); }
 
     if (score > highScore) {
       highScore = score;
       isNewHighScore = true;
-      document.getElementById('highscore-display').textContent = highScore.toLocaleString();
+      const hsd = document.getElementById('highscore-display');
+      hsd.textContent = highScore.toLocaleString();
+      hsd.classList.remove('new-best'); void hsd.offsetWidth; hsd.classList.add('new-best');
+      setTimeout(() => hsd.classList.remove('new-best'), 620);
     }
 
-    spawnParticles(midX, midY, COIN_DATA[newLevel-1].color);
-    const popColor = newLevel >= 10 ? '#FFD700' : newLevel >= 7 ? '#EC4899' : newLevel >= 4 ? '#A855F7' : '#60A5FA';
-    scorePopups.push({ x: midX, y: midY - 10, text: '+'+pts, alpha: 1, vy: -2.2, color: popColor, big: newLevel >= 8 });
+    spawnParticles(midX, midY, COIN_DATA[newLevel-1].color, newLevel);
 
-    if (newLevel >= 6) screenShake.decay = Math.min(1.8, (newLevel - 5) * 0.32);
+    // Score popup — emoji + color + size scaled by level
+    const popColor = newLevel >= 14 ? '#FFD700' : newLevel >= 12 ? '#FF6320' : newLevel >= 10 ? '#A855F7' : newLevel >= 7 ? '#EC4899' : newLevel >= 4 ? '#60A5FA' : '#4ADE80';
+    const popEmoji = newLevel >= 15 ? '👑 ' : newLevel >= 13 ? '💎 ' : newLevel >= 11 ? '🔥 ' : newLevel >= 9 ? '⚡ ' : '';
+    const popScale = newLevel >= 13 ? 1.55 : newLevel >= 10 ? 1.28 : newLevel >= 7 ? 1.1 : 1.0;
+    scorePopups.push({ x: midX, y: midY - 10, text: popEmoji + '+' + pts, alpha: 1, vy: -2.4 - newLevel * 0.06, color: popColor, big: newLevel >= 6, scale: popScale });
+
+    if (newLevel >= 6) screenShake.decay = Math.min(2.2, (newLevel - 5) * 0.38);
+
+    // Milestone toasts for epic merges
+    const milestones = { 9: '⚡ POWER COIN!', 11: '🔥 MEGA MERGE!', 13: '💎 LEGENDARY!', 15: '👑 THE KING!' };
+    if (milestones[newLevel]) {
+      setTimeout(() => {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast mega'; t.textContent = milestones[newLevel];
+        c.appendChild(t); setTimeout(() => t.remove(), 3200);
+      }, 120);
+    }
 
     comboCount++;
-    comboTimer = 90;
+    comboTimer = 110;
     if (comboCount >= 2) {
       const badge = document.getElementById('combo-badge');
       if (badge) {
         badge.textContent = `${comboCount}✕ COMBO!`;
-        badge.classList.remove('show'); void badge.offsetWidth; badge.classList.add('show');
+        badge.classList.remove('show', 'combo-hot', 'combo-ultra');
+        void badge.offsetWidth;
+        badge.classList.add('show');
+        if (comboCount >= 6) badge.classList.add('combo-ultra');
+        else if (comboCount >= 4) badge.classList.add('combo-hot');
       }
       if (comboCount >= 3) {
-        scorePopups.push({ x: W/2, y: midY - 45, text: `${comboCount}✕ COMBO!`, alpha: 1, vy: -1.8, color: '#FF8C00', big: true });
+        const comboColor = comboCount >= 6 ? '#FFD700' : comboCount >= 4 ? '#FF6320' : '#FF8C00';
+        scorePopups.push({ x: W/2, y: midY - 52, text: `${comboCount}✕ COMBO!`, alpha: 1, vy: -1.9, color: comboColor, big: true, scale: Math.min(1.0 + comboCount * 0.06, 1.5) });
       }
     }
 
     AudioEngine.playMerge(newLevel);
-    if (navigator.vibrate) navigator.vibrate(newLevel >= 6 ? 50 : 25);
+    // Scaled vibration patterns by level
+    const vibPat = newLevel >= 12 ? [40,12,40,12,80] : newLevel >= 9 ? [30,10,30,10,50] : newLevel >= 6 ? [20,10,35] : [newLevel >= 3 ? 22 : 14];
+    if (navigator.vibrate) navigator.vibrate(vibPat);
     mergeCount++;
     if (mergeCount % 10 === 0) autoSave();
   }
@@ -2211,18 +2451,65 @@ const GameEngine = (() => {
     }
   }
 
-  function spawnParticles(x, y, color) {
-    for (let i = 0; i < 16; i++) {
-      const angle = (Math.PI * 2 * i) / 16 + Math.random() * 0.25;
-      const speed = 2.5 + Math.random() * 5;
-      particles.push({ type: 'spark', x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, color, alpha: 1, life: 32 + Math.random()*28, r: 2.5 + Math.random()*3.5 });
+  function spawnParticles(x, y, color, level) {
+    level = level || 1;
+    const n  = Math.min(12 + level * 3, 52);
+    const ns = Math.min(5  + level * 2, 26);
+    const spd = 2.5 + level * 0.55;
+    const maxR = 58 + level * 16;
+    const lifeBase = 28 + level * 3;
+
+    // Radiating sparks
+    for (let i = 0; i < n; i++) {
+      const angle = (Math.PI * 2 * i) / n + Math.random() * 0.32;
+      const speed = spd * (0.55 + Math.random() * 1.0);
+      particles.push({ type: 'spark', x, y,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        color, alpha: 1,
+        life: lifeBase + Math.random() * 22,
+        r: 2 + Math.random() * 3 + level * 0.20 });
     }
-    for (let i = 0; i < 7; i++) {
+    // Sparkle stars
+    for (let i = 0; i < ns; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 1.5 + Math.random() * 3.5;
-      particles.push({ type: 'sparkle', x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, color, alpha: 1, life: 26 + Math.random()*22, r: 3 + Math.random()*5, rot: Math.random()*Math.PI });
+      const speed = 1.5 + Math.random() * 4.5 + level * 0.28;
+      const spColor = (level >= 10 && i % 2 === 0) ? '#FFD700' : (level >= 14 ? '#FFF8B0' : color);
+      particles.push({ type: 'sparkle', x, y,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        color: spColor, alpha: 1,
+        life: 22 + Math.random() * 28 + level,
+        r: 3.5 + Math.random() * 5.5 + level * 0.20,
+        rot: Math.random() * Math.PI });
     }
-    shockwaves.push({ x, y, r: 6, maxR: 70, color, alpha: 0.85, life: 24 });
+
+    // Shockwave rings — more rings for higher levels
+    const rings = level >= 13 ? 3 : level >= 9 ? 2 : 1;
+    const ringColors = [color, '#FFD700', 'rgba(255,255,255,0.85)'];
+    for (let ri = 0; ri < rings; ri++) {
+      shockwaves.push({
+        x, y, r: 8 + ri * 16,
+        maxR: maxR + ri * 32,
+        color: ringColors[ri] || color,
+        alpha: 0.92 - ri * 0.20,
+        life: 28 + ri * 6
+      });
+    }
+
+    // Screen flash overlay for epic merges (level 10+)
+    if (level >= 10) {
+      const flash = document.getElementById('merge-flash');
+      if (flash) {
+        const [fr, fg, fb] = hexToRgb(color);
+        const gCol = level >= 14 ? '255,215,0' : level >= 12 ? '255,80,20' : `${fr},${fg},${fb}`;
+        const intensity = Math.min(0.14 + (level - 10) * 0.048, 0.42);
+        const pct = `${Math.round(x/W*100)}% ${Math.round(y/H*100)}%`;
+        flash.style.background = `radial-gradient(ellipse at ${pct}, rgba(${gCol},${intensity}) 0%, rgba(${gCol},${intensity*0.4}) 35%, transparent 65%)`;
+        flash.classList.remove('active');
+        void flash.offsetWidth;
+        flash.classList.add('active');
+        setTimeout(() => flash.classList.remove('active'), 680);
+      }
+    }
   }
 
   function updateNextPreview() {
@@ -2437,15 +2724,23 @@ const GameEngine = (() => {
     // Score popups
     for (let i = scorePopups.length - 1; i >= 0; i--) {
       const sp = scorePopups[i];
-      sp.x += (Math.random()-0.5)*0.5;
-      sp.y += sp.vy; sp.vy *= 0.96; sp.alpha -= 0.022;
+      sp.x += (Math.random()-0.5)*0.4;
+      sp.y += sp.vy; sp.vy *= 0.96; sp.alpha -= 0.020;
       if (sp.alpha <= 0) { scorePopups.splice(i, 1); continue; }
       ctx.save();
       ctx.globalAlpha = sp.alpha;
-      ctx.font = sp.big ? `900 ${Math.max(14,W*0.04)}px 'Orbitron',monospace` : `700 ${Math.max(11,W*0.03)}px 'Orbitron',monospace`;
+      const sc = sp.scale || 1.0;
+      const bigSize  = Math.max(14, W*0.04) * sc;
+      const smSize   = Math.max(11, W*0.03);
+      ctx.font = sp.big ? `900 ${bigSize}px 'Orbitron',monospace` : `700 ${smSize}px 'Orbitron',monospace`;
       ctx.fillStyle = sp.color;
-      ctx.shadowBlur = 16; ctx.shadowColor = sp.color;
+      ctx.shadowBlur = sp.big ? 22 : 14; ctx.shadowColor = sp.color;
       ctx.textAlign = 'center';
+      // Subtle stroke for big popups to improve readability
+      if (sp.big && sc > 1.1) {
+        ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = bigSize * 0.08;
+        ctx.strokeText(sp.text, sp.x, sp.y);
+      }
       ctx.fillText(sp.text, sp.x, sp.y);
       ctx.restore();
     }
