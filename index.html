@@ -29,6 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Inter:wght@400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -1411,20 +1412,17 @@
       <div class="login-studio-text">✦ &nbsp;Synterlab Studio&nbsp; ✦</div>
     </div>
 
-    <div class="login-tabs">
-      <button class="login-tab active" id="tab-login">Login</button>
-      <button class="login-tab" id="tab-register">Register</button>
+    <div style="margin-bottom:10px;text-align:center;">
+      <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.5;">Enter your email — we'll send a magic link to sign you in instantly. No password needed.</p>
     </div>
 
     <div class="error-msg" id="auth-error"></div>
+    <div id="auth-success-msg" style="display:none;color:#10B981;font-size:0.82rem;text-align:center;margin-bottom:8px;line-height:1.5;"></div>
 
-    <input class="input-field" id="auth-username" type="text" placeholder="Username" autocomplete="off" spellcheck="false">
-    <input class="input-field" id="auth-password" type="password" placeholder="Password" autocomplete="off">
-    <div id="auth-confirm-wrap" style="display:none;">
-      <input class="input-field" id="auth-confirm" type="password" placeholder="Confirm Password" autocomplete="off">
+    <div id="auth-email-view">
+      <input class="input-field" id="auth-email" type="email" placeholder="your@email.com" autocomplete="email" spellcheck="false">
+      <button class="btn-full btn-primary" id="btn-auth-submit" style="margin-top:4px;">✉️ &nbsp;Send Magic Link</button>
     </div>
-
-    <button class="btn-full btn-primary" id="btn-auth-submit" style="margin-top:4px;">Login</button>
 
     <div class="login-divider"><span>or</span></div>
 
@@ -1645,40 +1643,92 @@ const AudioEngine = (() => {
 })();
 
 // ============================================================
-// AUTH MANAGER
+// SUPABASE SETUP
+// ============================================================
+const _SB_URL  = 'https://beshajhyzddovpfvzruf.supabase.co';
+const _SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlc2hhamh5emRkb3ZwZnZ6cnVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjI5ODEsImV4cCI6MjA5NzIzODk4MX0.q8Wz78Pd34OoqgRnROqecsN0EbH1ZoD_hSxuy3V8Hgs';
+const supabase = supabaseClient.createClient(_SB_URL, _SB_ANON);
+
+// ============================================================
+// AUTH MANAGER (Supabase Magic Link)
 // ============================================================
 const AuthManager = (() => {
   let currentUser = null;
-  function hashPass(p) { return btoa(unescape(encodeURIComponent(p))); }
-  function getUser(u) { try { return JSON.parse(localStorage.getItem('orynth_user_' + u)); } catch { return null; } }
-  function saveUser(d) { localStorage.setItem('orynth_user_' + d.username, JSON.stringify(d)); }
-  function login(username, password) {
-    const u = getUser(username);
-    if (!u) return { ok: false, msg: 'User not found' };
-    if (u.passwordHash !== hashPass(password)) return { ok: false, msg: 'Wrong password' };
-    currentUser = u; return { ok: true };
+
+  // Called once on page load to restore session from URL hash or localStorage
+  async function restoreSession() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) {
+      const email = session.user.email;
+      const username = email.split('@')[0];
+      currentUser = {
+        username,
+        email,
+        supabaseId: session.user.id,
+        highScore: 0,
+        totalGames: 0,
+        lastScore: 0,
+        isGuest: false
+      };
+      return true;
+    }
+    return false;
   }
-  function register(username, password) {
-    if (!username || username.length < 3) return { ok: false, msg: 'Username min 3 chars' };
-    if (!password || password.length < 4) return { ok: false, msg: 'Password min 4 chars' };
-    if (getUser(username)) return { ok: false, msg: 'Username taken' };
-    const u = { username, passwordHash: hashPass(password), highScore: 0, totalGames: 0, lastScore: 0 };
-    saveUser(u); currentUser = u; return { ok: true };
+
+  // Send magic link to email
+  async function sendMagicLink(email) {
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo }
+    });
+    if (error) return { ok: false, msg: error.message };
+    return { ok: true };
   }
+
   function loginGuest() {
     const id = 'guest_' + Math.random().toString(36).substr(2, 5).toUpperCase();
     currentUser = { username: id, isGuest: true, highScore: 0, totalGames: 0, lastScore: 0 };
     return currentUser;
   }
-  function logout() { currentUser = null; }
+
+  async function logout() {
+    currentUser = null;
+    await supabase.auth.signOut();
+  }
+
   function updateScore(score) {
     if (!currentUser) return;
     if (score > currentUser.highScore) currentUser.highScore = score;
     currentUser.lastScore = score;
-    if (!currentUser.isGuest) saveUser(currentUser);
   }
+
   function get() { return currentUser; }
-  return { login, register, loginGuest, logout, updateScore, get };
+
+  // Listen for auth state changes (magic link callback)
+  function onAuthChange(cb) {
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && session.user) {
+        const email = session.user.email;
+        const username = email.split('@')[0];
+        currentUser = {
+          username,
+          email,
+          supabaseId: session.user.id,
+          highScore: 0,
+          totalGames: 0,
+          lastScore: 0,
+          isGuest: false
+        };
+        cb(currentUser);
+      } else {
+        currentUser = null;
+        cb(null);
+      }
+    });
+  }
+
+  return { restoreSession, sendMagicLink, loginGuest, logout, updateScore, get, onAuthChange };
 })();
 
 // ============================================================
@@ -2926,8 +2976,8 @@ function init() {
     if (!document.getElementById('avatar-wrap').contains(e.target))
       document.getElementById('user-dropdown').classList.remove('show');
   });
-  document.getElementById('btn-dropdown-logout').addEventListener('click', () => {
-    AuthManager.logout(); UIManager.updateHeader();
+  document.getElementById('btn-dropdown-logout').addEventListener('click', async () => {
+    await AuthManager.logout(); UIManager.updateHeader();
     document.getElementById('user-dropdown').classList.remove('show');
     UIManager.toast('Logged out');
     setTimeout(() => showLoginScreen(), 380);
@@ -2940,8 +2990,8 @@ function init() {
   });
   document.getElementById('settings-overlay').addEventListener('click', closeSettings);
   document.getElementById('btn-close-settings').addEventListener('click', closeSettings);
-  document.getElementById('btn-logout-settings').addEventListener('click', () => {
-    AuthManager.logout(); UIManager.updateHeader(); closeSettings();
+  document.getElementById('btn-logout-settings').addEventListener('click', async () => {
+    await AuthManager.logout(); UIManager.updateHeader(); closeSettings();
     UIManager.toast('Logged out');
     setTimeout(() => showLoginScreen(), 400);
   });
@@ -2967,50 +3017,39 @@ function init() {
     setTimeout(() => s.classList.add('gone'), 480);
   }
 
-  document.getElementById('tab-login').addEventListener('click', () => {
-    document.getElementById('tab-login').classList.add('active');
-    document.getElementById('tab-register').classList.remove('active');
-    document.getElementById('btn-auth-submit').textContent = 'Login';
-    document.getElementById('auth-confirm-wrap').style.display = 'none';
-    document.getElementById('auth-error').textContent = '';
-  });
-  document.getElementById('tab-register').addEventListener('click', () => {
-    document.getElementById('tab-register').classList.add('active');
-    document.getElementById('tab-login').classList.remove('active');
-    document.getElementById('btn-auth-submit').textContent = 'Create Account';
-    document.getElementById('auth-confirm-wrap').style.display = '';
-    document.getElementById('auth-error').textContent = '';
-  });
-
-  document.getElementById('btn-auth-submit').addEventListener('click', () => {
+  document.getElementById('btn-auth-submit').addEventListener('click', async () => {
     AudioEngine.init();
-    const u = document.getElementById('auth-username').value.trim();
-    const p = document.getElementById('auth-password').value;
-    const isLogin = document.getElementById('tab-login').classList.contains('active');
+    const email = document.getElementById('auth-email').value.trim();
     const errEl = document.getElementById('auth-error');
-    if (isLogin) {
-      const r = AuthManager.login(u, p);
-      if (r.ok) { hideLoginScreen(); UIManager.updateHeader(); UIManager.toast('Welcome back, ' + u + '!'); checkResumeGame(); }
-      else errEl.textContent = r.msg;
-    } else {
-      const c = document.getElementById('auth-confirm').value;
-      if (p !== c) { errEl.textContent = 'Passwords do not match'; return; }
-      const r = AuthManager.register(u, p);
-      if (r.ok) { hideLoginScreen(); UIManager.updateHeader(); UIManager.toast('Account created! Welcome, ' + u + '!'); }
-      else errEl.textContent = r.msg;
+    const successEl = document.getElementById('auth-success-msg');
+    const submitBtn = document.getElementById('btn-auth-submit');
+    errEl.textContent = '';
+    successEl.style.display = 'none';
+    if (!email || !email.includes('@')) {
+      errEl.textContent = 'Please enter a valid email address';
+      return;
     }
+    submitBtn.textContent = 'Sending…';
+    submitBtn.disabled = true;
+    const r = await AuthManager.sendMagicLink(email);
+    submitBtn.disabled = false;
+    submitBtn.textContent = '✉️ Send Magic Link';
+    if (r.ok) {
+      document.getElementById('auth-email-view').style.display = 'none';
+      successEl.style.display = 'block';
+      successEl.textContent = '✅ Magic link sent to ' + email + '! Check your inbox and click the link to sign in.';
+    } else {
+      errEl.textContent = r.msg;
+    }
+  });
+  document.getElementById('auth-email').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-auth-submit').click();
   });
   document.getElementById('btn-auth-guest').addEventListener('click', () => {
     AudioEngine.init();
     const u = AuthManager.loginGuest();
     hideLoginScreen(); UIManager.updateHeader();
     UIManager.toast('Playing as ' + u.username);
-  });
-  ['auth-username','auth-password','auth-confirm'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('btn-auth-submit').click();
-    });
   });
 
   // Resume
@@ -3144,7 +3183,28 @@ function checkResumeGame() {
   if (u && !u.isGuest && SaveManager.hasSave(u.username)) UIManager.showModal('resume-modal');
 }
 
-document.addEventListener('DOMContentLoaded', init);
+async function initAuth() {
+  // Listen for auth state changes (handles magic link redirect)
+  AuthManager.onAuthChange((user) => {
+    if (user) {
+      UIManager.updateHeader();
+      const s = document.getElementById('login-screen');
+      if (s && !s.classList.contains('gone')) {
+        s.classList.remove('active');
+        setTimeout(() => s.classList.add('gone'), 480);
+      }
+      UIManager.toast('Welcome, ' + user.username + '!');
+      checkResumeGame();
+    }
+  });
+  // Restore existing session on page load
+  const hasSession = await AuthManager.restoreSession();
+  if (hasSession) {
+    UIManager.updateHeader();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { init(); initAuth(); });
 </script>
 </body>
 </html>
