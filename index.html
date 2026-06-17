@@ -1864,7 +1864,7 @@ const AuthManager = (() => {
 
   // Send magic link to email
   async function sendMagicLink(email) {
-    const redirectTo = 'https://mergecoin.games';
+    const redirectTo = 'https://www.mergecoin.games';
     const { error } = await _sb.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: redirectTo }
@@ -1894,7 +1894,7 @@ const AuthManager = (() => {
 
   // Listen for auth state changes (magic link callback)
   function onAuthChange(cb) {
-    _sb.auth.onAuthStateChange((_event, session) => {
+    _sb.auth.onAuthStateChange((event, session) => {
       if (session && session.user) {
         const email = session.user.email;
         const username = email.split('@')[0];
@@ -1907,10 +1907,10 @@ const AuthManager = (() => {
           lastScore: 0,
           isGuest: false
         };
-        cb(currentUser);
+        cb(currentUser, event);
       } else {
         currentUser = null;
-        cb(null);
+        cb(null, event);
       }
     });
   }
@@ -3444,9 +3444,10 @@ function checkResumeGame() {
 }
 
 async function initAuth() {
-  // Listen for auth state changes (handles magic link redirect)
-  AuthManager.onAuthChange((user) => {
-    if (user) {
+  // Listen ONLY for fresh logins (SIGNED_IN = magic link just used)
+  // INITIAL_SESSION / TOKEN_REFRESHED are handled by restoreSession() below
+  AuthManager.onAuthChange((user, event) => {
+    if (user && event === 'SIGNED_IN') {
       UIManager.updateHeader();
       const s = document.getElementById('login-screen');
       if (s && !s.classList.contains('gone')) {
@@ -3454,16 +3455,15 @@ async function initAuth() {
         setTimeout(() => s.classList.add('gone'), 480);
       }
       UIManager.toast('Welcome, ' + user.username + '!');
-      // Show user dashboard instead of jumping directly to game
+      // Show dashboard after login screen fades out
       setTimeout(() => showDashboard(user), 220);
     }
   });
-  // Restore existing session on page load
+  // Restore existing session on page load (returning users)
   const hasSession = await AuthManager.restoreSession();
   if (hasSession) {
     UIManager.updateHeader();
     const user = AuthManager.get();
-    // Show dashboard for returning users with active session
     if (user && !user.isGuest) {
       showDashboard(user);
     }
