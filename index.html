@@ -1311,149 +1311,275 @@
   /* ═══════════════════════════════════════════════
      USER DASHBOARD SCREEN
   ═══════════════════════════════════════════════ */
+  /* ── Premium Dashboard v1.3 Animations ── */
+  @keyframes dashOrb1 {
+    0%,100% { transform:translate(0,0) scale(1); opacity:0.7; }
+    50% { transform:translate(28px,-18px) scale(1.18); opacity:1; }
+  }
+  @keyframes dashOrb2 {
+    0%,100% { transform:translate(0,0) scale(1); opacity:0.5; }
+    50% { transform:translate(-18px,22px) scale(1.12); opacity:0.8; }
+  }
+  @keyframes avatarRing { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
+  @keyframes countUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes lbSlideIn { from { opacity:0; transform:translateX(-6px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes skeletonShimmer {
+    0% { background-position:-200% 0; } 100% { background-position:200% 0; }
+  }
+  @keyframes livePulse {
+    0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.3; transform:scale(0.8); }
+  }
+  @keyframes btnGlow {
+    0%,100% { box-shadow:0 4px 28px rgba(212,20,90,0.45),inset 0 1px 0 rgba(255,255,255,0.2); }
+    50% { box-shadow:0 4px 40px rgba(212,20,90,0.65),0 0 60px rgba(212,20,90,0.2),inset 0 1px 0 rgba(255,255,255,0.25); }
+  }
+  @keyframes panelIn {
+    from { opacity:0; transform:translateY(32px) scale(0.97); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes btnShimmer { 0% { left:-100%; } 60%,100% { left:160%; } }
+
   #user-dashboard {
     position: fixed; inset: 0; z-index: 150;
     display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(ellipse at 50% 0%, #3A1828 0%, #220E18 35%, #160A12 60%, #0E080C 100%);
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(212,20,90,0.24) 0%, transparent 48%),
+      radial-gradient(ellipse at 80% 88%, rgba(255,100,0,0.16) 0%, transparent 44%),
+      radial-gradient(ellipse at 58% 42%, rgba(130,0,180,0.10) 0%, transparent 38%),
+      #090507;
     opacity: 0; pointer-events: none;
-    transition: opacity 0.38s cubic-bezier(0.22,1,0.36,1);
-    padding: calc(env(safe-area-inset-top,0px) + 16px) calc(env(safe-area-inset-right,0px) + 16px) calc(env(safe-area-inset-bottom,0px) + 16px) calc(env(safe-area-inset-left,0px) + 16px);
+    transition: opacity 0.42s cubic-bezier(0.22,1,0.36,1);
+    padding: calc(env(safe-area-inset-top,0px) + 10px) calc(env(safe-area-inset-right,0px) + 14px) calc(env(safe-area-inset-bottom,0px) + 10px) calc(env(safe-area-inset-left,0px) + 14px);
     overflow-y: auto;
   }
   #user-dashboard.active { opacity: 1; pointer-events: all; }
   #user-dashboard.gone { display: none; }
-  .dashboard-panel {
-    background: linear-gradient(160deg, rgba(32,20,14,0.98), rgba(18,12,8,1));
-    border: 1px solid rgba(255,180,0,0.35);
-    border-radius: 24px;
-    padding: 24px 20px 20px;
-    width: 90%; max-width: 360px;
-    box-shadow: 0 0 100px rgba(212,20,90,0.22), 0 0 60px rgba(255,150,0,0.12), 0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
-    position: relative;
-    transform: translateY(30px);
-    transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1);
+  .dash-orb { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(48px); z-index: 0; }
+  .dash-orb-1 {
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(212,20,90,0.32) 0%, transparent 70%);
+    top: -80px; left: -60px; animation: dashOrb1 9s ease-in-out infinite;
   }
-  #user-dashboard.active .dashboard-panel { transform: translateY(0); }
+  .dash-orb-2 {
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,110,0,0.22) 0%, transparent 70%);
+    bottom: -50px; right: -40px; animation: dashOrb2 11s ease-in-out infinite;
+  }
+  .dashboard-panel {
+    background: linear-gradient(158deg, rgba(26,12,20,0.97) 0%, rgba(14,7,12,0.99) 100%);
+    border: 1px solid rgba(255,180,0,0.20);
+    border-radius: 28px;
+    padding: 20px 17px 17px;
+    width: 95%; max-width: 400px;
+    box-shadow:
+      0 0 0 1px rgba(255,180,0,0.05) inset,
+      0 0 90px rgba(212,20,90,0.16),
+      0 0 50px rgba(255,110,0,0.07),
+      0 36px 90px rgba(0,0,0,0.75),
+      inset 0 1px 0 rgba(255,255,255,0.07);
+    position: relative; z-index: 1;
+    animation: panelIn 0.52s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
   .dashboard-panel::before {
-    content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), transparent);
+    content: ''; position: absolute;
+    top: 0; left: 8%; right: 8%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), rgba(212,20,90,0.45), transparent);
+    border-radius: 0 0 2px 2px;
+  }
+  .dashboard-panel::after {
+    content: ''; position: absolute; inset: 0; border-radius: 28px;
+    background: linear-gradient(135deg, rgba(255,180,0,0.03) 0%, transparent 55%);
     pointer-events: none;
   }
   .dashboard-logo-area {
-    text-align: center; margin-bottom: 18px;
+    text-align: center; margin-bottom: 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
   }
   .dashboard-logo-img {
-    height: 44px; width: auto;
-    filter: drop-shadow(0 0 10px rgba(255,180,0,0.55)) drop-shadow(0 0 22px rgba(212,20,90,0.35));
-    margin-bottom: 6px;
+    height: 36px; width: auto;
+    filter: drop-shadow(0 0 14px rgba(255,180,0,0.70)) drop-shadow(0 0 30px rgba(212,20,90,0.40));
+  }
+  .dashboard-tagline {
+    font-family: 'Orbitron', monospace; font-size: 0.36rem;
+    letter-spacing: 0.55em; color: rgba(255,180,0,0.32);
+    text-transform: uppercase; margin-top: 5px;
   }
   .dashboard-header {
     display: flex; align-items: center; gap: 12px;
-    margin-bottom: 18px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,180,0,0.14);
-    border-radius: 16px;
-    padding: 12px 14px;
+    margin-bottom: 14px;
+    background: rgba(255,255,255,0.022);
+    border: 1px solid rgba(255,180,0,0.11);
+    border-radius: 18px; padding: 11px 13px;
+    position: relative; overflow: hidden;
+  }
+  .dashboard-header::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(212,20,90,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .dashboard-avatar-wrap { position: relative; flex-shrink: 0; }
+  .dashboard-avatar-ring {
+    position: absolute; inset: -3px; border-radius: 50%;
+    background: conic-gradient(from 0deg, #D4145A 0%, #FF6820 30%, #FFB400 55%, #D4145A 100%);
+    animation: avatarRing 3.2s linear infinite; opacity: 0.88;
+  }
+  .dashboard-avatar-ring-mask {
+    position: absolute; inset: 2px; border-radius: 50%; background: #180B14;
   }
   .dashboard-avatar {
-    width: 50px; height: 50px; border-radius: 50%;
-    background: linear-gradient(135deg, #D4145A, #9B0E45);
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, #D4145A 0%, #8B0A38 100%);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 1.25rem; color: white;
-    border: 2px solid rgba(255,180,0,0.5);
-    box-shadow: 0 0 22px rgba(212,20,90,0.45);
-    flex-shrink: 0;
+    font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 1.35rem; color: #fff;
+    position: relative; z-index: 1;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.6);
   }
   .dashboard-user-info { flex: 1; min-width: 0; }
   .dashboard-username {
-    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.0rem;
-    color: var(--text); letter-spacing: 0.04em;
+    font-family: 'Exo 2', sans-serif; font-weight: 800; font-size: 1.0rem;
+    color: #fff; letter-spacing: 0.03em;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .dashboard-email {
-    font-size: 0.66rem; color: var(--text-dim); margin-top: 2px;
+    font-size: 0.60rem; color: rgba(255,180,0,0.38); margin-top: 3px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-family: 'Orbitron', monospace; letter-spacing: 0.04em;
   }
   .dashboard-logout-btn {
-    background: rgba(212,20,90,0.1);
-    border: 1px solid rgba(212,20,90,0.3);
-    border-radius: 10px; width: 34px; height: 34px;
+    background: rgba(212,20,90,0.07); border: 1px solid rgba(212,20,90,0.20);
+    border-radius: 10px; width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 0.9rem; color: rgba(255,120,150,0.8);
-    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
-    flex-shrink: 0;
+    cursor: pointer; font-size: 0.82rem; color: rgba(255,100,130,0.65);
+    transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0;
   }
   .dashboard-logout-btn:hover {
-    background: rgba(212,20,90,0.22); border-color: rgba(212,20,90,0.5);
-    color: #FF7E9A; transform: scale(1.08);
-    box-shadow: 0 0 14px rgba(212,20,90,0.25);
+    background: rgba(212,20,90,0.2); border-color: rgba(212,20,90,0.42);
+    color: #FF7E9A; transform: scale(1.12); box-shadow: 0 0 14px rgba(212,20,90,0.28);
   }
   .dashboard-stats {
-    display: flex; gap: 8px; margin-bottom: 16px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 15px;
   }
   .dashboard-stat {
-    flex: 1;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,180,0,0.16);
-    border-radius: 14px;
-    padding: 11px 6px 10px;
-    text-align: center;
-    transition: border-color 0.2s;
+    background: linear-gradient(145deg, rgba(255,255,255,0.038), rgba(255,255,255,0.012));
+    border: 1px solid rgba(255,180,0,0.13); border-radius: 16px;
+    padding: 11px 4px 10px; text-align: center; position: relative; overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s; cursor: default;
   }
-  .dashboard-stat:hover { border-color: rgba(255,180,0,0.32); }
+  .dashboard-stat::before {
+    content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.28), transparent);
+  }
+  .dashboard-stat:hover {
+    border-color: rgba(255,180,0,0.28);
+    box-shadow: 0 0 22px rgba(255,180,0,0.07), inset 0 0 16px rgba(255,180,0,0.03);
+  }
+  .dashboard-stat-icon { font-size: 0.85rem; margin-bottom: 3px; display: block; }
   .dashboard-stat-value {
-    font-family: 'Orbitron', monospace; font-size: 1.05rem; font-weight: 700;
-    color: var(--gold);
-    text-shadow: 0 0 16px rgba(255,180,0,0.5);
-    line-height: 1.2;
+    font-family: 'Orbitron', monospace; font-size: 0.98rem; font-weight: 700;
+    color: var(--gold); text-shadow: 0 0 18px rgba(255,180,0,0.55); line-height: 1.2;
+    animation: countUp 0.55s ease both;
   }
   .dashboard-stat-label {
-    font-size: 0.50rem; color: rgba(255,180,0,0.42);
-    text-transform: uppercase; letter-spacing: 0.18em;
-    margin-top: 4px;
+    font-size: 0.42rem; color: rgba(255,180,0,0.36);
+    text-transform: uppercase; letter-spacing: 0.22em; margin-top: 5px;
     font-family: 'Orbitron', monospace;
   }
-  .dashboard-section-title {
-    font-family: 'Orbitron', monospace; font-size: 0.44rem; font-weight: 700;
-    letter-spacing: 0.32em; text-transform: uppercase;
-    color: rgba(255,180,0,0.42);
-    margin-bottom: 8px; padding-bottom: 7px;
-    border-bottom: 1px solid rgba(255,180,0,0.10);
+  .dashboard-lb-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; padding-bottom: 7px; border-bottom: 1px solid rgba(255,180,0,0.08);
   }
-  .dashboard-lb { margin-bottom: 4px; }
+  .dashboard-lb-title {
+    font-family: 'Orbitron', monospace; font-size: 0.41rem; font-weight: 700;
+    letter-spacing: 0.32em; text-transform: uppercase; color: rgba(255,180,0,0.42);
+  }
+  .dashboard-lb-live {
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'Orbitron', monospace; font-size: 0.38rem;
+    letter-spacing: 0.22em; color: rgba(74,222,128,0.72);
+  }
+  .dashboard-lb-live-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: #4ADE80;
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  .dash-lb-skeleton { display: flex; flex-direction: column; gap: 4px; }
+  .dash-lb-skeleton-row {
+    height: 31px; border-radius: 9px;
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0.04) 25%,
+      rgba(255,255,255,0.09) 50%,
+      rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.4s infinite;
+  }
+  .dashboard-lb { margin-bottom: 2px; }
   .dash-lb-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 7px 10px; border-radius: 10px;
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 8px; border-radius: 11px;
     transition: background 0.15s, transform 0.15s;
-    border: 1px solid transparent;
-    margin-bottom: 2px;
+    border: 1px solid transparent; margin-bottom: 3px;
+    animation: lbSlideIn 0.32s ease both;
   }
-  .dash-lb-row:hover { background: rgba(255,180,0,0.05); border-color: rgba(255,180,0,0.1); transform: translateX(2px); }
-  .dash-lb-row.is-me { background: rgba(212,20,90,0.08); border-color: rgba(212,20,90,0.2); }
-  .dash-lb-rank { font-family:'Orbitron',monospace; font-size:0.65rem; font-weight:700; color:rgba(255,180,0,0.38); width:22px; flex-shrink:0; }
-  .dash-lb-rank.top3 { color: var(--gold); }
-  .dash-lb-name { font-family:'Exo 2',sans-serif; font-size:0.82rem; color:var(--text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .dash-lb-name.me { color: var(--gold); font-weight:700; }
-  .dash-lb-score { font-family:'Orbitron',monospace; font-size:0.72rem; color:rgba(255,180,0,0.7); flex-shrink:0; }
-  .dash-lb-empty { color:var(--text-dim); font-size:0.78rem; text-align:center; padding:12px 0; }
+  .dash-lb-row:hover { background: rgba(255,180,0,0.04); border-color: rgba(255,180,0,0.09); transform: translateX(2px); }
+  .dash-lb-row.is-me {
+    background: linear-gradient(90deg, rgba(212,20,90,0.10), rgba(255,90,0,0.06));
+    border-color: rgba(212,20,90,0.24); box-shadow: 0 0 14px rgba(212,20,90,0.08);
+  }
+  .dash-lb-rank {
+    font-family: 'Orbitron', monospace; font-size: 0.60rem; font-weight: 700;
+    color: rgba(255,180,0,0.32); width: 20px; flex-shrink: 0; text-align: center;
+  }
+  .dash-lb-rank.top1 { color: #FFD700; text-shadow: 0 0 8px rgba(255,215,0,0.55); font-size: 0.78rem; }
+  .dash-lb-rank.top2 { color: #C8C8C8; font-size: 0.75rem; }
+  .dash-lb-rank.top3 { color: #CD8B3C; font-size: 0.72rem; }
+  .dash-lb-mini-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(180,20,80,0.65), rgba(220,70,0,0.55));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Exo 2', sans-serif; font-size: 0.58rem; font-weight: 800; color: rgba(255,255,255,0.9);
+    flex-shrink: 0;
+  }
+  .dash-lb-row.is-me .dash-lb-mini-avatar {
+    background: linear-gradient(135deg, #D4145A, #FF6820); box-shadow: 0 0 9px rgba(212,20,90,0.45);
+  }
+  .dash-lb-name {
+    font-family: 'Exo 2', sans-serif; font-size: 0.78rem;
+    color: rgba(255,255,255,0.72); flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dash-lb-name.me { color: var(--gold); font-weight: 700; }
+  .dash-lb-score {
+    font-family: 'Orbitron', monospace; font-size: 0.65rem; color: rgba(255,180,0,0.68); flex-shrink: 0;
+  }
+  .dash-lb-empty {
+    color: rgba(255,180,0,0.32); font-size: 0.75rem; text-align: center;
+    padding: 16px 0; font-family: 'Exo 2', sans-serif;
+  }
   .dashboard-btn-play {
-    width: 100%; padding: 13px 16px;
-    border-radius: 14px; border: none;
-    font-family: 'Exo 2', sans-serif; font-weight: 800; font-size: 0.92rem;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    cursor: pointer; margin-top: 16px; margin-bottom: 6px;
-    background: linear-gradient(135deg, #D4145A, #FF6820);
-    color: white;
-    box-shadow: 0 4px 24px rgba(212,20,90,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
-    transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px 16px; border-radius: 16px; border: none;
+    font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 0.95rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; margin-top: 13px; margin-bottom: 8px;
+    background: linear-gradient(135deg, #C4104C 0%, #D4145A 25%, #E8401A 65%, #FF6820 100%);
+    color: #fff;
+    box-shadow: 0 4px 28px rgba(212,20,90,0.45), inset 0 1px 0 rgba(255,255,255,0.22);
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    position: relative; overflow: hidden;
+    animation: btnGlow 3s ease-in-out infinite;
   }
-  .dashboard-btn-play:hover { transform: translateY(-2px); box-shadow: 0 6px 36px rgba(212,20,90,0.58); }
-  .dashboard-btn-play:active { transform: scale(0.97); }
+  .dashboard-btn-play::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+    animation: btnShimmer 2.8s ease-in-out infinite;
+  }
+  .dashboard-btn-play:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 10px 48px rgba(212,20,90,0.62), inset 0 1px 0 rgba(255,255,255,0.28);
+  }
+  .dashboard-btn-play:active { transform: scale(0.97); animation: none; }
   .dashboard-version {
-    text-align: center; font-size: 0.62rem; color: rgba(144,114,96,0.6);
-    font-family: 'Orbitron', monospace; letter-spacing: 0.12em;
-    margin-top: 8px;
+    text-align: center; font-size: 0.52rem; color: rgba(144,114,96,0.38);
+    font-family: 'Orbitron', monospace; letter-spacing: 0.16em;
   }
 
 </style>
@@ -1583,12 +1709,19 @@
 
 <!-- ═══ USER DASHBOARD ═══ -->
 <div id="user-dashboard" class="gone">
+  <div class="dash-orb dash-orb-1"></div>
+  <div class="dash-orb dash-orb-2"></div>
   <div class="dashboard-panel">
     <div class="dashboard-logo-area">
       <img src="./logo.png" alt="MergeCoin" class="dashboard-logo-img"/>
+      <div class="dashboard-tagline">Crypto Merge Arena</div>
     </div>
     <div class="dashboard-header">
-      <div class="dashboard-avatar" id="dash-avatar">?</div>
+      <div class="dashboard-avatar-wrap">
+        <div class="dashboard-avatar-ring"></div>
+        <div class="dashboard-avatar-ring-mask"></div>
+        <div class="dashboard-avatar" id="dash-avatar">?</div>
+      </div>
       <div class="dashboard-user-info">
         <div class="dashboard-username" id="dash-username">Player</div>
         <div class="dashboard-email" id="dash-email">—</div>
@@ -1597,24 +1730,38 @@
     </div>
     <div class="dashboard-stats">
       <div class="dashboard-stat">
+        <span class="dashboard-stat-icon">🏆</span>
         <div class="dashboard-stat-value" id="dash-highscore">0</div>
         <div class="dashboard-stat-label">Best Score</div>
       </div>
       <div class="dashboard-stat">
+        <span class="dashboard-stat-icon">🎮</span>
         <div class="dashboard-stat-value" id="dash-games">0</div>
         <div class="dashboard-stat-label">Games</div>
       </div>
       <div class="dashboard-stat">
+        <span class="dashboard-stat-icon">👑</span>
         <div class="dashboard-stat-value" id="dash-rank">—</div>
-        <div class="dashboard-stat-label">Rank</div>
+        <div class="dashboard-stat-label">Global Rank</div>
       </div>
     </div>
-    <div class="dashboard-section-title">Top Players</div>
-    <div class="dashboard-lb" id="dash-lb-list"></div>
+    <div class="dashboard-lb-header">
+      <div class="dashboard-lb-title">🌐 &nbsp;Global Leaderboard</div>
+      <div class="dashboard-lb-live"><div class="dashboard-lb-live-dot"></div>LIVE</div>
+    </div>
+    <div class="dashboard-lb" id="dash-lb-list">
+      <div class="dash-lb-skeleton">
+        <div class="dash-lb-skeleton-row"></div>
+        <div class="dash-lb-skeleton-row"></div>
+        <div class="dash-lb-skeleton-row"></div>
+        <div class="dash-lb-skeleton-row"></div>
+        <div class="dash-lb-skeleton-row"></div>
+      </div>
+    </div>
     <button class="dashboard-btn-play" id="dash-play-btn">
-      <span style="font-size:1.1rem;">▶</span> Start Playing
+      <span style="font-size:1.05rem">▶</span> Start Playing
     </button>
-    <div class="dashboard-version">MergeCoin.games &nbsp;·&nbsp; v1.2.0</div>
+    <div class="dashboard-version">MergeCoin.games &nbsp;·&nbsp; v1.3.0</div>
   </div>
 </div>
 
@@ -1747,7 +1894,7 @@
   </div>
   <div class="settings-row" style="border-bottom:none;">
     <div class="settings-row-label" style="color:var(--text-dim);font-size:0.78rem;">Version</div>
-    <div style="color:rgba(255,180,0,0.5);font-size:0.72rem;font-family:'Orbitron',monospace;letter-spacing:0.1em;">v1.1.0</div>
+    <div style="color:rgba(255,180,0,0.5);font-size:0.72rem;font-family:'Orbitron',monospace;letter-spacing:0.1em;">v1.3.0</div>
   </div>
 </div>
 
@@ -1949,6 +2096,58 @@ const Leaderboard = (() => {
     localStorage.setItem(LB_KEY, JSON.stringify(lb));
   }
   return { get, add };
+})();
+
+// ============================================================
+// SUPABASE GLOBAL LEADERBOARD
+// ============================================================
+const SupabaseLeaderboard = (() => {
+  let _cache = null, _cacheTime = 0;
+  const TTL = 30000; // 30s cache
+
+  async function submitScore(user, score, highestCoin) {
+    if (!user || user.isGuest || !user.supabaseId) return;
+    try {
+      const gamesPlayed = parseInt(localStorage.getItem('mc_games_' + user.username) || '0');
+      // Fetch current best to avoid overwriting with lower score
+      const { data: cur } = await _sb.from('scores')
+        .select('score').eq('user_id', user.supabaseId).maybeSingle();
+      if (!cur || score > (cur.score || 0)) {
+        await _sb.from('scores').upsert({
+          user_id: user.supabaseId,
+          username: user.username,
+          score,
+          highest_coin: highestCoin,
+          games_played: gamesPlayed,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+      } else {
+        // Score not a new high — just update games_played
+        await _sb.from('scores').update({
+          games_played: gamesPlayed,
+          updated_at: new Date().toISOString()
+        }).eq('user_id', user.supabaseId);
+      }
+      _cache = null; // invalidate cache
+    } catch(e) { /* graceful fallback */ }
+  }
+
+  async function getTopScores(limit = 8) {
+    const now = Date.now();
+    if (_cache && now - _cacheTime < TTL) return _cache;
+    try {
+      const { data, error } = await _sb
+        .from('scores')
+        .select('username, score, highest_coin, games_played')
+        .order('score', { ascending: false })
+        .limit(limit);
+      if (error || !data) return null;
+      _cache = data; _cacheTime = now;
+      return data;
+    } catch(e) { return null; }
+  }
+
+  return { submitScore, getTopScores };
 })();
 
 // ============================================================
@@ -2776,6 +2975,7 @@ const GameEngine = (() => {
       _incrementGameCount(u);
       const cd = COIN_DATA[highestLevel - 1];
       Leaderboard.add({ username: u.username, score, date: new Date().toLocaleDateString(), highestCoin: cd.ticker });
+      SupabaseLeaderboard.submitScore(u, score, cd.ticker);
       SaveManager.clear(u.username);
     }
     setTimeout(() => {
@@ -3135,25 +3335,62 @@ function initSettings() {
 // ============================================================
 // DASHBOARD MANAGER
 // ============================================================
-function showDashboard(user) {
+async function showDashboard(user) {
   if (!user) return;
-  const initial = user.username[0].toUpperCase();
-  document.getElementById('dash-avatar').textContent = initial;
+
+  // Set profile info instantly
+  document.getElementById('dash-avatar').textContent = user.username[0].toUpperCase();
   document.getElementById('dash-username').textContent = user.username;
   document.getElementById('dash-email').textContent = user.isGuest ? 'Guest Player' : (user.email || '');
 
-  const lb = Leaderboard.get();
-  const myEntry = lb.find(e => e.username === user.username);
-  const myRank = myEntry ? lb.indexOf(myEntry) + 1 : null;
-  document.getElementById('dash-highscore').textContent = myEntry ? myEntry.score.toLocaleString() : '0';
-  const gamesKey = 'mc_games_' + user.username;
-  document.getElementById('dash-games').textContent = parseInt(localStorage.getItem(gamesKey) || '0').toLocaleString();
-  document.getElementById('dash-rank').textContent = myRank ? '#' + myRank : (lb.length ? '#' + (lb.length + 1) : '—');
-  _renderDashboardLb(lb, user);
+  // Show skeleton while leaderboard loads
+  document.getElementById('dash-lb-list').innerHTML =
+    '<div class="dash-lb-skeleton">' +
+    '<div class="dash-lb-skeleton-row"></div>'.repeat(5) +
+    '</div>';
 
+  // Show panel immediately (don't wait for network)
   const d = document.getElementById('user-dashboard');
   d.classList.remove('gone');
   requestAnimationFrame(() => d.classList.add('active'));
+
+  // Local data first (instant)
+  const localLb = Leaderboard.get();
+  const localEntry = localLb.find(e => e.username === user.username);
+  const gamesKey = 'mc_games_' + user.username;
+  const gamesPlayed = parseInt(localStorage.getItem(gamesKey) || '0');
+  _animateStat('dash-highscore', localEntry ? localEntry.score : 0);
+  _animateStat('dash-games', gamesPlayed, false);
+
+  // Fetch global leaderboard (Supabase, fallback to localStorage)
+  const globalLb = await SupabaseLeaderboard.getTopScores(8);
+  const lbData = globalLb || localLb;
+
+  const myEntry = lbData.find(e => e.username === user.username);
+  const myRank  = myEntry ? lbData.indexOf(myEntry) + 1 : null;
+
+  // Update stats with real data
+  if (myEntry && myEntry.score > (localEntry ? localEntry.score : 0)) {
+    _animateStat('dash-highscore', myEntry.score);
+  }
+  document.getElementById('dash-rank').textContent =
+    myRank ? '#' + myRank : (lbData.length ? '#' + (lbData.length + 1) : '—');
+
+  _renderDashboardLb(lbData, user);
+}
+
+function _animateStat(id, target, formatNumber = true) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const duration = 680, start = Date.now();
+  const tick = () => {
+    const p = Math.min((Date.now() - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(target * ease);
+    el.textContent = formatNumber ? val.toLocaleString() : val;
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 function hideDashboard() {
@@ -3164,17 +3401,24 @@ function hideDashboard() {
 
 function _renderDashboardLb(lb, user) {
   const container = document.getElementById('dash-lb-list');
-  if (!lb.length) {
-    container.innerHTML = '<div class="dash-lb-empty">No scores yet — be the first on the board!</div>';
+  if (!lb || !lb.length) {
+    container.innerHTML = '<div class="dash-lb-empty">No global scores yet — be the first! 🚀</div>';
     return;
   }
-  const medals = ['🥇','🥈','🥉'];
-  container.innerHTML = lb.slice(0, 5).map((e, i) => {
+  const rankSymbols = ['🥇','🥈','🥉'];
+  const rankClasses = ['top1','top2','top3'];
+  container.innerHTML = lb.slice(0, 8).map((e, i) => {
     const isMe = user && e.username === user.username;
-    return `<div class="dash-lb-row${isMe ? ' is-me' : ''}">
-      <div class="dash-lb-rank${i < 3 ? ' top3' : ''}">${medals[i] || '#'+(i+1)}</div>
+    const rankMark = i < 3
+      ? `<span class="dash-lb-rank ${rankClasses[i]}">${rankSymbols[i]}</span>`
+      : `<span class="dash-lb-rank">#${i+1}</span>`;
+    const initial = (e.username || '?')[0].toUpperCase();
+    const delay   = (i * 0.055).toFixed(2);
+    return `<div class="dash-lb-row${isMe ? ' is-me' : ''}" style="animation-delay:${delay}s">
+      ${rankMark}
+      <div class="dash-lb-mini-avatar">${initial}</div>
       <div class="dash-lb-name${isMe ? ' me' : ''}">${e.username}${isMe ? ' ✦' : ''}</div>
-      <div class="dash-lb-score">${e.score.toLocaleString()}</div>
+      <div class="dash-lb-score">${(e.score||0).toLocaleString()}</div>
     </div>`;
   }).join('');
 }
