@@ -27,7 +27,7 @@
 <link rel="apple-touch-icon" href="/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Inter:wght@400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Space+Grotesk:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -43,7 +43,7 @@
     --brand-orange: #FF6820;
     --danger: #FF3B30;
     --text: #F5EAD8;
-    --text-dim: #907260;
+    --text-dim: #B89878;
     --border: rgba(255,180,0,0.28);
     --glass: rgba(255,255,255,0.05);
     --glass-border: rgba(255,180,0,0.4);
@@ -57,7 +57,7 @@
     width: 100%; height: 100%;
     overflow: hidden;
     background: radial-gradient(ellipse at 50% 0%, #3A1828 0%, #220E18 35%, #160A12 60%, #0E080C 100%);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     color: var(--text);
     user-select: none;
     -webkit-user-select: none;
@@ -153,7 +153,7 @@
   .score-block { display: flex; flex-direction: column; align-items: center; gap: 1px; }
   .score-label {
     font-family: 'Orbitron', monospace;
-    font-size: 0.41rem; color: rgba(255,180,0,0.38);
+    font-size: 0.41rem; color: rgba(255,190,80,0.65);
     text-transform: uppercase; letter-spacing: 0.3em;
   }
   .score-value {
@@ -238,8 +238,8 @@
     flex: 1;
     padding: 11px 4px 10px;
     border-radius: 16px;
-    background: rgba(255,255,255,0.05);
-    color: var(--text-dim);
+    background: rgba(255,255,255,0.06);
+    color: rgba(220,195,165,0.95);
     font-family: 'Exo 2', sans-serif;
     font-size: 0.60rem; font-weight: 800;
     letter-spacing: 0.08em; text-transform: uppercase;
@@ -256,6 +256,13 @@
   }
   .btn-icon { font-size: 1.4rem; line-height: 1; filter: drop-shadow(0 0 6px currentColor); }
   .action-btn:active { transform: scale(0.95) !important; }
+  #btn-save:hover, #btn-leaderboard:hover {
+    background: rgba(255,180,0,0.09);
+    border-color: rgba(255,180,0,0.28);
+    color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(255,180,0,0.12);
+  }
   #btn-restart {
     background: linear-gradient(145deg, rgba(220,15,85,0.92), rgba(180,8,65,0.96));
     border-color: rgba(212,20,90,0.65);
@@ -415,16 +422,23 @@
     width: 100%;
     background: rgba(255,255,255,0.06);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 11px 13px;
+    border-radius: 12px;
+    padding: 12px 14px;
     color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
     margin-bottom: 10px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    letter-spacing: 0.01em;
   }
-  .input-field:focus { border-color: var(--accent); }
+  .input-field::placeholder { color: rgba(184,152,120,0.5); }
+  .input-field:focus {
+    border-color: rgba(255,180,0,0.55);
+    background: rgba(255,255,255,0.09);
+    box-shadow: 0 0 0 3px rgba(255,180,0,0.08), 0 0 20px rgba(255,180,0,0.06);
+  }
   .btn-full {
     width: 100%;
     padding: 12px 16px;
@@ -512,7 +526,7 @@
   .settings-section-title {
     font-family: 'Orbitron', monospace; font-size: 0.46rem; font-weight: 700;
     letter-spacing: 0.32em; text-transform: uppercase;
-    color: rgba(255,180,0,0.42);
+    color: rgba(255,190,80,0.62);
     margin: 16px 0 10px; padding-bottom: 8px;
     border-bottom: 1px solid rgba(255,180,0,0.1);
   }
@@ -574,7 +588,7 @@
   }
   .lb-header-sub {
     font-family: 'Orbitron', monospace; font-size: 0.42rem; letter-spacing: 0.32em;
-    color: rgba(255,180,0,0.4); margin-top: 3px; text-transform: uppercase;
+    color: rgba(255,190,80,0.60); margin-top: 3px; text-transform: uppercase;
   }
   .lb-body { padding: 10px 12px 14px; }
   .lb-rows-wrap { display: flex; flex-direction: column; gap: 5px; }
@@ -623,7 +637,7 @@
     padding: 10px 18px;
     border-radius: 10px;
     font-size: 0.82rem; font-weight: 600;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
     backdrop-filter: blur(16px);
     white-space: nowrap;
@@ -885,7 +899,7 @@
   #login-screen {
     position: fixed; inset: 0; z-index: 450;
     display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(ellipse at 50% 35%, #221810 0%, #181210 50%, #100E0E 100%);
+    background: radial-gradient(ellipse at 50% 35%, #281808 0%, #1C1008 50%, #120C08 100%);
     opacity: 0; pointer-events: none;
     transition: opacity 0.45s cubic-bezier(0.22,1,0.36,1);
     overflow: hidden;
@@ -1660,13 +1674,13 @@
 
   <div id="action-bar">
     <button class="action-btn" id="btn-restart">
-      <span class="btn-icon">↺</span><span>Restart</span>
+      <span class="btn-icon">🔄</span><span>Restart</span>
     </button>
     <button class="action-btn" id="btn-save">
-      <span class="btn-icon">⊕</span><span>Save</span>
+      <span class="btn-icon">💾</span><span>Save</span>
     </button>
     <button class="action-btn" id="btn-leaderboard">
-      <span class="btn-icon">⦿</span><span>Ranks</span>
+      <span class="btn-icon">🏆</span><span>Ranks</span>
     </button>
   </div>
 </div>
@@ -1687,8 +1701,8 @@
       <div class="login-studio-text">✦ &nbsp;Synterlab Studio&nbsp; ✦</div>
     </div>
 
-    <div style="margin-bottom:10px;text-align:center;">
-      <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.5;">Enter your email — we'll send a magic link to sign you in instantly. No password needed.</p>
+    <div style="margin-bottom:12px;text-align:center;">
+      <p style="font-size:0.80rem;color:rgba(200,175,148,0.88);line-height:1.65;letter-spacing:0.01em;">Drop your email — we'll send a <strong style="color:rgba(255,195,80,0.92);font-weight:700;">magic sign-in link</strong> instantly. No password, ever.</p>
     </div>
 
     <div class="error-msg" id="auth-error"></div>
@@ -1701,9 +1715,9 @@
 
     <div class="login-divider"><span>or</span></div>
 
-    <button class="btn-full btn-ghost" id="btn-auth-guest">🎮 &nbsp;Play as Guest</button>
+    <button class="btn-full btn-ghost" id="btn-auth-guest">🎮 &nbsp;Continue as Guest</button>
 
-    <div class="login-version">MergeCoin.games &nbsp;·&nbsp; v1.1.0</div>
+    <div class="login-version">MergeCoin.games &nbsp;·&nbsp; v1.3.0</div>
   </div>
 </div>
 
@@ -1726,7 +1740,7 @@
         <div class="dashboard-username" id="dash-username">Player</div>
         <div class="dashboard-email" id="dash-email">—</div>
       </div>
-      <button class="dashboard-logout-btn" id="dash-logout-btn" title="Logout">⏏</button>
+      <button class="dashboard-logout-btn" id="dash-logout-btn" title="Logout" aria-label="Logout"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
     </div>
     <div class="dashboard-stats">
       <div class="dashboard-stat">
@@ -1766,43 +1780,6 @@
 </div>
 
 <!-- Modals -->
-<div class="modal-overlay" id="login-modal" style="display:none!important;">
-  <div class="modal-card">
-    <div class="modal-title" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:4px;">
-      <svg width="54" height="54" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="mG2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#D4145A"/>
-            <stop offset="50%" stop-color="#E84530"/>
-            <stop offset="100%" stop-color="#FF7518"/>
-          </linearGradient>
-          <radialGradient id="cG2" cx="50%" cy="35%" r="65%" gradientUnits="objectBoundingBox">
-            <stop offset="0%" stop-color="#FFE566"/>
-            <stop offset="60%" stop-color="#F59E0B"/>
-            <stop offset="100%" stop-color="#CC8800"/>
-          </radialGradient>
-          <filter id="glow2" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="2" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <path d="M6,10 L28,10 L50,46 L28,82 L6,82 L24,46 Z" fill="url(#mG2)" filter="url(#glow2)" opacity="0.96"/>
-        <path d="M86,10 L64,10 L42,46 L64,82 L86,82 L68,46 Z" fill="url(#mG2)" filter="url(#glow2)" opacity="0.96"/>
-        <circle cx="46" cy="46" r="21" fill="url(#cG2)" filter="url(#glow2)"/>
-        <circle cx="46" cy="46" r="21" fill="none" stroke="rgba(255,220,50,0.45)" stroke-width="2"/>
-        <text x="46" y="52" text-anchor="middle" fill="#6A3A00" font-weight="900" font-size="18" font-family="Arial Black,Arial,sans-serif" letter-spacing="1">MC</text>
-      </svg>
-      MergeCoin
-    </div>
-    <div class="error-msg" id="login-error"></div>
-    <input class="input-field" id="login-username" type="text" placeholder="Username" autocomplete="off">
-    <input class="input-field" id="login-password" type="password" placeholder="Password" autocomplete="off">
-    <button class="btn-full btn-primary" id="btn-login">Login</button>
-    <button class="btn-full btn-secondary" id="btn-register">Register</button>
-    <hr class="modal-divider">
-    <button class="btn-full btn-ghost" id="btn-guest">🎮 Play as Guest</button>
-  </div>
-</div>
 
 <div class="modal-overlay" id="resume-modal">
   <div class="modal-card">
@@ -1834,7 +1811,7 @@
   <div class="modal-card" style="padding:0;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;">
     <div class="lb-header">
       <div class="lb-header-title">⚡ Leaderboard</div>
-      <div class="lb-header-sub">Top 10 · All Time · Local</div>
+      <div class="lb-header-sub">🌐 Top 10 · All Time · Global</div>
     </div>
     <div class="lb-body" style="overflow-y:auto;flex:1;">
       <div class="lb-rows-wrap" id="leaderboard-list"></div>
@@ -1902,6 +1879,14 @@
 <div id="toast-container"></div>
 
 <script>
+// ============================================================
+// UTILITIES
+// ============================================================
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 // ============================================================
 // COIN DATA
 // ============================================================
@@ -2196,7 +2181,7 @@ const UIManager = (() => {
       const isMe = u && e.username === u.username;
       return `<div class="lb-row${isMe ? ' lb-me-row' : ''}">
         <div class="lb-rank${i < 3 ? ' top3' : ''}">${medals[i] || '#'+(i+1)}</div>
-        <div class="lb-name${isMe ? ' me' : ''}">${e.username}</div>
+        <div class="lb-name${isMe ? ' me' : ''}">${escHtml(e.username)}</div>
         ${isMe ? '<span class="lb-me-tag">YOU</span>' : ''}
         ${e.highestCoin ? `<div class="lb-coin-badge">${e.highestCoin}</div>` : ''}
         <div class="lb-score">${e.score.toLocaleString()}</div>
@@ -3417,7 +3402,7 @@ function _renderDashboardLb(lb, user) {
     return `<div class="dash-lb-row${isMe ? ' is-me' : ''}" style="animation-delay:${delay}s">
       ${rankMark}
       <div class="dash-lb-mini-avatar">${initial}</div>
-      <div class="dash-lb-name${isMe ? ' me' : ''}">${e.username}${isMe ? ' ✦' : ''}</div>
+      <div class="dash-lb-name${isMe ? ' me' : ''}">${escHtml(e.username)}${isMe ? ' ✦' : ''}</div>
       <div class="dash-lb-score">${(e.score||0).toLocaleString()}</div>
     </div>`;
   }).join('');
@@ -3570,14 +3555,14 @@ function init() {
     const btn = document.getElementById('btn-restart');
     if (btn.dataset.confirm === '1') {
       btn.dataset.confirm = '';
-      btn.textContent = '🔄 Restart';
+      btn.innerHTML = '<span class="btn-icon">🔄</span><span>Restart</span>';
       UIManager.hideModal('gameover-modal');
       GameEngine.reset();
     } else {
       btn.dataset.confirm = '1';
-      btn.textContent = '⚠️ Tap again to confirm';
+      btn.innerHTML = '<span class="btn-icon">⚠️</span><span>Confirm?</span>';
       setTimeout(() => {
-        if (btn.dataset.confirm === '1') { btn.dataset.confirm = ''; btn.textContent = '🔄 Restart'; }
+        if (btn.dataset.confirm === '1') { btn.dataset.confirm = ''; btn.innerHTML = '<span class="btn-icon">🔄</span><span>Restart</span>'; }
       }, 2500);
     }
   });
