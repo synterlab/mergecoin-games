@@ -3443,29 +3443,48 @@ function checkResumeGame() {
   if (u && !u.isGuest && SaveManager.hasSave(u.username)) UIManager.showModal('resume-modal');
 }
 
+// Bypass intro + login screens, go straight to dashboard
+function _goToDashboard(user) {
+  UIManager.updateHeader();
+  // Force-dismiss intro screen (z-index 500) so it doesn't cover dashboard
+  const introEl = document.getElementById('intro-screen');
+  if (introEl && !introEl.classList.contains('gone')) {
+    introEl.classList.add('fade-out');
+    setTimeout(() => introEl.classList.add('gone'), 700);
+  }
+  // Force-hide login screen (z-index 450)
+  const loginEl = document.getElementById('login-screen');
+  if (loginEl) { loginEl.classList.remove('active'); loginEl.classList.add('gone'); }
+  // Show dashboard (z-index 150) after overlays start dismissing
+  setTimeout(() => showDashboard(user), 350);
+}
+
 async function initAuth() {
-  // Listen ONLY for fresh logins (SIGNED_IN = magic link just used)
-  // INITIAL_SESSION / TOKEN_REFRESHED are handled by restoreSession() below
+  // Detect if user just landed from a magic link (?code= for PKCE, #access_token for implicit)
+  const _url = new URL(window.location.href);
+  const fromMagicLink = _url.searchParams.has('code') || _url.hash.includes('access_token');
+  let _dashShown = false;
+
+  // Register auth listener first (covers SIGNED_IN AND INITIAL_SESSION)
   AuthManager.onAuthChange((user, event) => {
-    if (user && event === 'SIGNED_IN') {
-      UIManager.updateHeader();
-      const s = document.getElementById('login-screen');
-      if (s && !s.classList.contains('gone')) {
-        s.classList.remove('active');
-        setTimeout(() => s.classList.add('gone'), 480);
-      }
+    // fromMagicLink path: Supabase may fire INITIAL_SESSION (code already exchanged)
+    // or SIGNED_IN (code exchanged while listener was active) — handle both
+    if (user && fromMagicLink && !_dashShown &&
+        (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+      _dashShown = true;
       UIManager.toast('Welcome, ' + user.username + '!');
-      // Show dashboard after login screen fades out
-      setTimeout(() => showDashboard(user), 220);
+      _goToDashboard(user);
+      // Clean auth params from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   });
-  // Restore existing session on page load (returning users)
-  const hasSession = await AuthManager.restoreSession();
-  if (hasSession) {
-    UIManager.updateHeader();
-    const user = AuthManager.get();
-    if (user && !user.isGuest) {
-      showDashboard(user);
+
+  // For returning users (no magic link in URL), restore existing session
+  if (!fromMagicLink) {
+    const hasSession = await AuthManager.restoreSession();
+    if (hasSession) {
+      const user = AuthManager.get();
+      if (user && !user.isGuest) _goToDashboard(user);
     }
   }
 }
