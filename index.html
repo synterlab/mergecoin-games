@@ -1307,6 +1307,155 @@
     font-size: 0.44rem !important;
     text-shadow: 0 0 10px rgba(255,180,0,0.28) !important;
   }
+
+  /* ═══════════════════════════════════════════════
+     USER DASHBOARD SCREEN
+  ═══════════════════════════════════════════════ */
+  #user-dashboard {
+    position: fixed; inset: 0; z-index: 150;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, #3A1828 0%, #220E18 35%, #160A12 60%, #0E080C 100%);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.38s cubic-bezier(0.22,1,0.36,1);
+    padding: calc(env(safe-area-inset-top,0px) + 16px) calc(env(safe-area-inset-right,0px) + 16px) calc(env(safe-area-inset-bottom,0px) + 16px) calc(env(safe-area-inset-left,0px) + 16px);
+    overflow-y: auto;
+  }
+  #user-dashboard.active { opacity: 1; pointer-events: all; }
+  #user-dashboard.gone { display: none; }
+  .dashboard-panel {
+    background: linear-gradient(160deg, rgba(32,20,14,0.98), rgba(18,12,8,1));
+    border: 1px solid rgba(255,180,0,0.35);
+    border-radius: 24px;
+    padding: 24px 20px 20px;
+    width: 90%; max-width: 360px;
+    box-shadow: 0 0 100px rgba(212,20,90,0.22), 0 0 60px rgba(255,150,0,0.12), 0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    transform: translateY(30px);
+    transition: transform 0.42s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  #user-dashboard.active .dashboard-panel { transform: translateY(0); }
+  .dashboard-panel::before {
+    content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.55), transparent);
+    pointer-events: none;
+  }
+  .dashboard-logo-area {
+    text-align: center; margin-bottom: 18px;
+  }
+  .dashboard-logo-img {
+    height: 44px; width: auto;
+    filter: drop-shadow(0 0 10px rgba(255,180,0,0.55)) drop-shadow(0 0 22px rgba(212,20,90,0.35));
+    margin-bottom: 6px;
+  }
+  .dashboard-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,180,0,0.14);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  .dashboard-avatar {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: linear-gradient(135deg, #D4145A, #9B0E45);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 1.25rem; color: white;
+    border: 2px solid rgba(255,180,0,0.5);
+    box-shadow: 0 0 22px rgba(212,20,90,0.45);
+    flex-shrink: 0;
+  }
+  .dashboard-user-info { flex: 1; min-width: 0; }
+  .dashboard-username {
+    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.0rem;
+    color: var(--text); letter-spacing: 0.04em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dashboard-email {
+    font-size: 0.66rem; color: var(--text-dim); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .dashboard-logout-btn {
+    background: rgba(212,20,90,0.1);
+    border: 1px solid rgba(212,20,90,0.3);
+    border-radius: 10px; width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 0.9rem; color: rgba(255,120,150,0.8);
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    flex-shrink: 0;
+  }
+  .dashboard-logout-btn:hover {
+    background: rgba(212,20,90,0.22); border-color: rgba(212,20,90,0.5);
+    color: #FF7E9A; transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(212,20,90,0.25);
+  }
+  .dashboard-stats {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .dashboard-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,180,0,0.16);
+    border-radius: 14px;
+    padding: 11px 6px 10px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .dashboard-stat:hover { border-color: rgba(255,180,0,0.32); }
+  .dashboard-stat-value {
+    font-family: 'Orbitron', monospace; font-size: 1.05rem; font-weight: 700;
+    color: var(--gold);
+    text-shadow: 0 0 16px rgba(255,180,0,0.5);
+    line-height: 1.2;
+  }
+  .dashboard-stat-label {
+    font-size: 0.50rem; color: rgba(255,180,0,0.42);
+    text-transform: uppercase; letter-spacing: 0.18em;
+    margin-top: 4px;
+    font-family: 'Orbitron', monospace;
+  }
+  .dashboard-section-title {
+    font-family: 'Orbitron', monospace; font-size: 0.44rem; font-weight: 700;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: rgba(255,180,0,0.42);
+    margin-bottom: 8px; padding-bottom: 7px;
+    border-bottom: 1px solid rgba(255,180,0,0.10);
+  }
+  .dashboard-lb { margin-bottom: 4px; }
+  .dash-lb-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 10px;
+    transition: background 0.15s, transform 0.15s;
+    border: 1px solid transparent;
+    margin-bottom: 2px;
+  }
+  .dash-lb-row:hover { background: rgba(255,180,0,0.05); border-color: rgba(255,180,0,0.1); transform: translateX(2px); }
+  .dash-lb-row.is-me { background: rgba(212,20,90,0.08); border-color: rgba(212,20,90,0.2); }
+  .dash-lb-rank { font-family:'Orbitron',monospace; font-size:0.65rem; font-weight:700; color:rgba(255,180,0,0.38); width:22px; flex-shrink:0; }
+  .dash-lb-rank.top3 { color: var(--gold); }
+  .dash-lb-name { font-family:'Exo 2',sans-serif; font-size:0.82rem; color:var(--text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dash-lb-name.me { color: var(--gold); font-weight:700; }
+  .dash-lb-score { font-family:'Orbitron',monospace; font-size:0.72rem; color:rgba(255,180,0,0.7); flex-shrink:0; }
+  .dash-lb-empty { color:var(--text-dim); font-size:0.78rem; text-align:center; padding:12px 0; }
+  .dashboard-btn-play {
+    width: 100%; padding: 13px 16px;
+    border-radius: 14px; border: none;
+    font-family: 'Exo 2', sans-serif; font-weight: 800; font-size: 0.92rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; margin-top: 16px; margin-bottom: 6px;
+    background: linear-gradient(135deg, #D4145A, #FF6820);
+    color: white;
+    box-shadow: 0 4px 24px rgba(212,20,90,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
+    transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .dashboard-btn-play:hover { transform: translateY(-2px); box-shadow: 0 6px 36px rgba(212,20,90,0.58); }
+  .dashboard-btn-play:active { transform: scale(0.97); }
+  .dashboard-version {
+    text-align: center; font-size: 0.62rem; color: rgba(144,114,96,0.6);
+    font-family: 'Orbitron', monospace; letter-spacing: 0.12em;
+    margin-top: 8px;
+  }
+
 </style>
 </head>
 <body>
@@ -1429,6 +1578,43 @@
     <button class="btn-full btn-ghost" id="btn-auth-guest">🎮 &nbsp;Play as Guest</button>
 
     <div class="login-version">MergeCoin.games &nbsp;·&nbsp; v1.1.0</div>
+  </div>
+</div>
+
+<!-- ═══ USER DASHBOARD ═══ -->
+<div id="user-dashboard" class="gone">
+  <div class="dashboard-panel">
+    <div class="dashboard-logo-area">
+      <img src="./logo.png" alt="MergeCoin" class="dashboard-logo-img"/>
+    </div>
+    <div class="dashboard-header">
+      <div class="dashboard-avatar" id="dash-avatar">?</div>
+      <div class="dashboard-user-info">
+        <div class="dashboard-username" id="dash-username">Player</div>
+        <div class="dashboard-email" id="dash-email">—</div>
+      </div>
+      <button class="dashboard-logout-btn" id="dash-logout-btn" title="Logout">⏏</button>
+    </div>
+    <div class="dashboard-stats">
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-value" id="dash-highscore">0</div>
+        <div class="dashboard-stat-label">Best Score</div>
+      </div>
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-value" id="dash-games">0</div>
+        <div class="dashboard-stat-label">Games</div>
+      </div>
+      <div class="dashboard-stat">
+        <div class="dashboard-stat-value" id="dash-rank">—</div>
+        <div class="dashboard-stat-label">Rank</div>
+      </div>
+    </div>
+    <div class="dashboard-section-title">Top Players</div>
+    <div class="dashboard-lb" id="dash-lb-list"></div>
+    <button class="dashboard-btn-play" id="dash-play-btn">
+      <span style="font-size:1.1rem;">▶</span> Start Playing
+    </button>
+    <div class="dashboard-version">MergeCoin.games &nbsp;·&nbsp; v1.2.0</div>
   </div>
 </div>
 
@@ -2587,6 +2773,7 @@ const GameEngine = (() => {
     gameOver = true; canDrop = false;
     const u = AuthManager.get();
     if (u) {
+      _incrementGameCount(u);
       const cd = COIN_DATA[highestLevel - 1];
       Leaderboard.add({ username: u.username, score, date: new Date().toLocaleDateString(), highestCoin: cd.ticker });
       SaveManager.clear(u.username);
@@ -2946,6 +3133,59 @@ function initSettings() {
 }
 
 // ============================================================
+// DASHBOARD MANAGER
+// ============================================================
+function showDashboard(user) {
+  if (!user) return;
+  const initial = user.username[0].toUpperCase();
+  document.getElementById('dash-avatar').textContent = initial;
+  document.getElementById('dash-username').textContent = user.username;
+  document.getElementById('dash-email').textContent = user.isGuest ? 'Guest Player' : (user.email || '');
+
+  const lb = Leaderboard.get();
+  const myEntry = lb.find(e => e.username === user.username);
+  const myRank = myEntry ? lb.indexOf(myEntry) + 1 : null;
+  document.getElementById('dash-highscore').textContent = myEntry ? myEntry.score.toLocaleString() : '0';
+  const gamesKey = 'mc_games_' + user.username;
+  document.getElementById('dash-games').textContent = parseInt(localStorage.getItem(gamesKey) || '0').toLocaleString();
+  document.getElementById('dash-rank').textContent = myRank ? '#' + myRank : (lb.length ? '#' + (lb.length + 1) : '—');
+  _renderDashboardLb(lb, user);
+
+  const d = document.getElementById('user-dashboard');
+  d.classList.remove('gone');
+  requestAnimationFrame(() => d.classList.add('active'));
+}
+
+function hideDashboard() {
+  const d = document.getElementById('user-dashboard');
+  d.classList.remove('active');
+  setTimeout(() => d.classList.add('gone'), 480);
+}
+
+function _renderDashboardLb(lb, user) {
+  const container = document.getElementById('dash-lb-list');
+  if (!lb.length) {
+    container.innerHTML = '<div class="dash-lb-empty">No scores yet — be the first on the board!</div>';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  container.innerHTML = lb.slice(0, 5).map((e, i) => {
+    const isMe = user && e.username === user.username;
+    return `<div class="dash-lb-row${isMe ? ' is-me' : ''}">
+      <div class="dash-lb-rank${i < 3 ? ' top3' : ''}">${medals[i] || '#'+(i+1)}</div>
+      <div class="dash-lb-name${isMe ? ' me' : ''}">${e.username}${isMe ? ' ✦' : ''}</div>
+      <div class="dash-lb-score">${e.score.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+}
+
+function _incrementGameCount(user) {
+  if (!user || user.isGuest) return;
+  const key = 'mc_games_' + user.username;
+  localStorage.setItem(key, (parseInt(localStorage.getItem(key) || '0') + 1).toString());
+}
+
+// ============================================================
 // INIT & WIRING
 // ============================================================
 function init() {
@@ -2980,6 +3220,21 @@ function init() {
   document.getElementById('btn-dropdown-logout').addEventListener('click', async () => {
     await AuthManager.logout(); UIManager.updateHeader();
     document.getElementById('user-dropdown').classList.remove('show');
+    UIManager.toast('Logged out');
+    setTimeout(() => showLoginScreen(), 380);
+  });
+
+  // ─── DASHBOARD handlers ───
+  document.getElementById('dash-play-btn').addEventListener('click', () => {
+    AudioEngine.init();
+    hideDashboard();
+    checkResumeGame();
+  });
+  document.getElementById('dash-logout-btn').addEventListener('click', async () => {
+    AudioEngine.init();
+    await AuthManager.logout();
+    hideDashboard();
+    UIManager.updateHeader();
     UIManager.toast('Logged out');
     setTimeout(() => showLoginScreen(), 380);
   });
@@ -3097,7 +3352,11 @@ function init() {
   // Game over
   document.getElementById('btn-play-again').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); GameEngine.reset(); });
   document.getElementById('btn-go-leaderboard').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); UIManager.renderLeaderboard('leaderboard-list'); UIManager.showModal('leaderboard-modal'); });
-  document.getElementById('btn-main-menu').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); showLoginScreen(); });
+  document.getElementById('btn-main-menu').addEventListener('click', () => {
+    UIManager.hideModal('gameover-modal');
+    const u = AuthManager.get();
+    if (u && !u.isGuest) { showDashboard(u); } else { showLoginScreen(); }
+  });
   document.getElementById('btn-close-lb').addEventListener('click', () => UIManager.hideModal('leaderboard-modal'));
 
   document.getElementById('btn-exit-game').addEventListener('click', () => {
@@ -3195,13 +3454,19 @@ async function initAuth() {
         setTimeout(() => s.classList.add('gone'), 480);
       }
       UIManager.toast('Welcome, ' + user.username + '!');
-      checkResumeGame();
+      // Show user dashboard instead of jumping directly to game
+      setTimeout(() => showDashboard(user), 220);
     }
   });
   // Restore existing session on page load
   const hasSession = await AuthManager.restoreSession();
   if (hasSession) {
     UIManager.updateHeader();
+    const user = AuthManager.get();
+    // Show dashboard for returning users with active session
+    if (user && !user.isGuest) {
+      showDashboard(user);
+    }
   }
 }
 
