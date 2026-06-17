@@ -1647,7 +1647,8 @@ const AudioEngine = (() => {
 // ============================================================
 const _SB_URL  = 'https://beshajhyzddovpfvzruf.supabase.co';
 const _SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlc2hhamh5emRkb3ZwZnZ6cnVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NjI5ODEsImV4cCI6MjA5NzIzODk4MX0.q8Wz78Pd34OoqgRnROqecsN0EbH1ZoD_hSxuy3V8Hgs';
-const supabase = supabaseClient.createClient(_SB_URL, _SB_ANON);
+// CDN exposes global as window.supabase — capture before naming our client
+const _sb = window.supabase.createClient(_SB_URL, _SB_ANON);
 
 // ============================================================
 // AUTH MANAGER (Supabase Magic Link)
@@ -1657,7 +1658,7 @@ const AuthManager = (() => {
 
   // Called once on page load to restore session from URL hash or localStorage
   async function restoreSession() {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await _sb.auth.getSession();
     if (session && session.user) {
       const email = session.user.email;
       const username = email.split('@')[0];
@@ -1678,7 +1679,7 @@ const AuthManager = (() => {
   // Send magic link to email
   async function sendMagicLink(email) {
     const redirectTo = window.location.origin + window.location.pathname;
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await _sb.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: redirectTo }
     });
@@ -1694,7 +1695,7 @@ const AuthManager = (() => {
 
   async function logout() {
     currentUser = null;
-    await supabase.auth.signOut();
+    await _sb.auth.signOut();
   }
 
   function updateScore(score) {
@@ -1707,7 +1708,7 @@ const AuthManager = (() => {
 
   // Listen for auth state changes (magic link callback)
   function onAuthChange(cb) {
-    supabase.auth.onAuthStateChange((_event, session) => {
+    _sb.auth.onAuthStateChange((_event, session) => {
       if (session && session.user) {
         const email = session.user.email;
         const username = email.split('@')[0];
