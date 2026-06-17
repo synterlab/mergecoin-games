@@ -81,82 +81,81 @@
   }
   #header {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     padding: 8px 16px;
-    background: rgba(16,12,12,0.95);
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(10px);
-    flex-shrink: 0;
-    min-height: 46px;
+    background: linear-gradient(180deg, rgba(20,13,10,0.99) 0%, rgba(16,11,9,0.98) 100%);
+    border-bottom: 1px solid rgba(212,20,90,0.2);
+    backdrop-filter: blur(14px);
+    flex-shrink: 0; min-height: 46px;
+    box-shadow: 0 1px 0 rgba(255,180,0,0.07), 0 4px 22px rgba(0,0,0,0.35);
   }
   #header-logo {
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 900;
-    font-size: 1.1rem;
-    background: linear-gradient(90deg, var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 250%;
-    animation: logoShimmer 4s ease infinite;
+    font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 1.1rem;
+    background: linear-gradient(90deg, #FFE566, var(--gold), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    background-size: 280%; animation: logoShimmer 4s ease infinite;
+    letter-spacing: 0.02em;
   }
-  #header-logo span { font-size: 0.8rem; opacity: 0.7; }
+  #header-logo span { font-size: 0.72rem; opacity: 0.55; letter-spacing: 0.04em; }
   #header-right { display: flex; align-items: center; gap: 8px; }
   .icon-btn {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,180,0,0.2);
+    border-radius: 10px; width: 34px; height: 34px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: all 0.2s;
-    color: var(--accent);
+    cursor: pointer; font-size: 1rem;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    color: rgba(255,180,0,0.6);
   }
-  .icon-btn:hover { background: rgba(245,158,11,0.15); border-color: var(--accent); }
+  .icon-btn:hover {
+    background: rgba(255,180,0,0.1); border-color: rgba(255,180,0,0.4);
+    color: var(--gold); box-shadow: 0 0 14px rgba(255,180,0,0.2);
+    transform: scale(1.08);
+  }
   #user-avatar {
-    width: 30px; height: 30px;
-    border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     background: linear-gradient(135deg, #D4145A, #9B0E45);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 700;
-    font-size: 0.8rem;
+    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 0.82rem; color: white;
     cursor: pointer;
-    border: 2px solid var(--accent);
+    border: 2px solid rgba(255,180,0,0.45);
+    box-shadow: 0 0 14px rgba(212,20,90,0.35);
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  #user-avatar:hover {
+    border-color: var(--gold); box-shadow: 0 0 22px rgba(212,20,90,0.6);
+    transform: scale(1.1);
   }
   #score-bar {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 12px;
-    background: rgba(16,12,10,0.97);
-    border-bottom: 1px solid rgba(245,158,11,0.2);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 14px;
+    background: linear-gradient(180deg, rgba(18,12,10,0.99), rgba(14,10,8,0.99));
+    border-bottom: 1px solid rgba(212,20,90,0.12);
     flex-shrink: 0;
-    box-shadow: 0 2px 24px rgba(217,119,6,0.18) inset;
+    box-shadow: 0 3px 20px rgba(0,0,0,0.3);
   }
-  .score-block { display: flex; align-items: center; gap: 6px; }
-  .score-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+  .score-block { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .score-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.41rem; color: rgba(255,180,0,0.38);
+    text-transform: uppercase; letter-spacing: 0.3em;
+  }
   .score-value {
     font-family: 'Orbitron', monospace;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--gold);
+    font-size: 1.1rem; font-weight: 700; color: var(--gold);
+    text-shadow: 0 0 16px rgba(255,180,0,0.35);
+    letter-spacing: 0.03em; line-height: 1.1;
   }
   #next-preview {
-    display: flex; align-items: center; gap: 6px;
-    padding: 3px 10px;
-    background: rgba(217,119,6,0.15);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    font-size: 0.65rem;
-    color: var(--text-dim);
-    box-shadow: 0 0 18px rgba(245,158,11,0.3);
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 5px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,180,0,0.2);
+    border-radius: 14px;
+    box-shadow: 0 0 16px rgba(255,180,0,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
   }
-  #next-canvas { border-radius: 50%; }
+  #next-canvas { border-radius: 50%; display: block; }
   #game-wrapper {
     position: relative;
     flex: 1;
@@ -184,11 +183,12 @@
   }
   #username-overlay {
     position: absolute;
-    top: 6px; right: 6px;
-    font-size: 0.6rem;
-    color: rgba(245,158,11,0.7);
+    top: 6px; right: 8px;
     font-family: 'Orbitron', monospace;
+    font-size: 0.48rem; font-weight: 700; letter-spacing: 0.22em;
+    color: rgba(255,180,0,0.38);
     pointer-events: none;
+    text-shadow: 0 0 8px rgba(255,180,0,0.25);
   }
   #action-bar {
     width: 100%;
@@ -618,14 +618,16 @@
   }
   .score-flash { animation: scoreFlash 0.35s cubic-bezier(0.34,1.56,0.64,1); }
   #combo-badge {
-    position: absolute; top: 14px; left: 50%;
-    transform: translateX(-50%) scale(0.6);
-    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1rem;
-    color: #FFD700; white-space: nowrap;
-    text-shadow: 0 0 18px #FFD700, 0 0 35px #FF8C00, 0 0 60px rgba(255,140,0,0.4);
+    position: absolute; top: 12px; left: 50%;
+    transform: translateX(-50%) scale(0.5);
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1.15rem;
+    background: linear-gradient(160deg, #FFE566 0%, #FFD700 40%, #FF8C20 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    white-space: nowrap;
+    filter: drop-shadow(0 0 18px rgba(255,170,0,0.8)) drop-shadow(0 0 38px rgba(255,80,0,0.45));
     pointer-events: none; opacity: 0;
-    transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-    z-index: 10;
+    transition: opacity 0.15s ease, transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 10; letter-spacing: 0.06em;
   }
   #combo-badge.show { opacity: 1; transform: translateX(-50%) scale(1); }
   @keyframes goScorePop {
@@ -1064,15 +1066,15 @@
     </div>
     <div id="score-bar">
       <div class="score-block">
-        <span class="score-label">⭐ Score</span>
+        <span class="score-label">Score</span>
         <span class="score-value" id="score-display">0</span>
       </div>
       <div id="next-preview">
-        <span style="font-size:0.6rem;color:var(--text-dim);">NEXT</span>
-        <canvas id="next-canvas" width="28" height="28"></canvas>
+        <span style="font-family:'Orbitron',monospace;font-size:0.38rem;color:rgba(255,180,0,0.38);letter-spacing:0.3em;">NEXT</span>
+        <canvas id="next-canvas" width="30" height="30"></canvas>
       </div>
       <div class="score-block">
-        <span class="score-label">🏆 Best</span>
+        <span class="score-label">Best</span>
         <span class="score-value" id="highscore-display">0</span>
       </div>
     </div>
@@ -2075,12 +2077,18 @@ const GameEngine = (() => {
       ctx.lineWidth = 2.5; ctx.stroke();
     }
 
-    // Danger zone line
+    // Danger zone fill + line
     ctx.save();
-    const dangerAlpha = 0.3 + 0.2 * Math.sin(_ftime * 0.1);
+    const dangerPulse = 0.06 + 0.03 * Math.sin(_ftime * 0.08);
+    const dangerFill = ctx.createLinearGradient(0, 0, 0, dangerY);
+    dangerFill.addColorStop(0, `rgba(255,30,60,${dangerPulse * 1.4})`);
+    dangerFill.addColorStop(1, 'rgba(255,30,60,0)');
+    ctx.fillStyle = dangerFill;
+    ctx.fillRect(0, 0, W, dangerY);
+    const dangerAlpha = 0.42 + 0.28 * Math.sin(_ftime * 0.1);
     ctx.strokeStyle = `rgba(255,59,48,${dangerAlpha})`;
     ctx.lineWidth = 1.5;
-    ctx.setLineDash([8, 6]);
+    ctx.setLineDash([8, 5]);
     ctx.beginPath(); ctx.moveTo(0, dangerY); ctx.lineTo(W, dangerY); ctx.stroke();
     ctx.setLineDash([]);
     ctx.restore();
@@ -2091,12 +2099,13 @@ const GameEngine = (() => {
       const clampedX = Math.max(4, Math.min(W-4, targetX));
       ctx.save();
       const lineGrad = ctx.createLinearGradient(clampedX, dangerY, clampedX, H);
-      lineGrad.addColorStop(0, 'rgba(245,158,11,0.35)');
-      lineGrad.addColorStop(1, 'rgba(245,158,11,0)');
+      lineGrad.addColorStop(0, 'rgba(255,210,60,0.6)');
+      lineGrad.addColorStop(0.45, 'rgba(255,170,20,0.25)');
+      lineGrad.addColorStop(1, 'rgba(255,170,20,0)');
       ctx.strokeStyle = lineGrad;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath(); ctx.moveTo(clampedX, dangerY + 5); ctx.lineTo(clampedX, H); ctx.stroke();
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 5]);
+      ctx.beginPath(); ctx.moveTo(clampedX, dangerY + 4); ctx.lineTo(clampedX, H); ctx.stroke();
       ctx.setLineDash([]);
       ctx.restore();
     }
