@@ -99,14 +99,17 @@
     box-shadow: 0 1px 0 rgba(212,20,90,0.15), 0 4px 30px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(212,20,90,0.08);
   }
   #header-logo {
-    font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 1.1rem;
-    background: linear-gradient(90deg, #FFE566, var(--gold), #FF9500, var(--gold), #FFE566);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    background-size: 350%; animation: logoShimmer 3s ease infinite;
-    filter: drop-shadow(0 0 8px rgba(255,180,0,0.4));
-    letter-spacing: 0.02em;
+    display: flex; align-items: center;
   }
-  #header-logo span { font-size: 0.72rem; opacity: 0.55; letter-spacing: 0.04em; }
+  #header-logo-img {
+    height: 32px; width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(255,180,0,0.50)) drop-shadow(0 0 18px rgba(212,20,90,0.30));
+    transition: filter 0.3s ease;
+  }
+  #header-logo-img:hover {
+    filter: drop-shadow(0 0 14px rgba(255,210,0,0.80)) drop-shadow(0 0 28px rgba(212,20,90,0.50));
+  }
   #header-right { display: flex; align-items: center; gap: 8px; }
   .icon-btn {
     background: rgba(255,255,255,0.04);
@@ -309,8 +312,7 @@
       border-right: none;
       min-height: unset;
     }
-    #header-logo { font-size: 0.85rem; }
-    #header-logo span { display: none; }
+    #header-logo-img { height: 26px; }
     #header-right { gap: 6px; }
     .icon-btn { width: 28px; height: 28px; font-size: 0.9rem; }
     #user-avatar { width: 26px; height: 26px; font-size: 0.7rem; }
@@ -762,24 +764,21 @@
     text-shadow: 0 0 14px rgba(255,180,0,0.55), 0 0 28px rgba(255,150,0,0.25);
   }
   #intro-gem {
-    width: 80px; height: 80px; background: transparent;
+    width: 220px; height: 220px; background: transparent;
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 14px;
+    margin: 0 auto 18px;
     animation: introFadeUp 0.7s ease 0.3s both, introGemPulse 3s ease-in-out 1.2s infinite;
+  }
+  #intro-logo-img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    border-radius: 22%;
   }
   @keyframes introGemPulse {
     0%,100% { filter: drop-shadow(0 0 22px rgba(255,200,0,0.80)) drop-shadow(0 0 44px rgba(212,20,90,0.45)) drop-shadow(0 0 70px rgba(255,100,0,0.20)); }
     50%      { filter: drop-shadow(0 0 42px rgba(255,220,0,1.0)) drop-shadow(0 0 80px rgba(212,20,90,0.75)) drop-shadow(0 0 120px rgba(255,150,0,0.35)); }
   }
-  #intro-title {
-    font-family: 'Exo 2', sans-serif; font-weight: 900;
-    font-size: clamp(2.6rem, 12vw, 4.5rem); line-height: 1; letter-spacing: 0.07em;
-    background: linear-gradient(160deg, #FFF0A0 0%, #FFE566 20%, #FFD700 45%, #F59E0B 70%, #E07000 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    background-size: 200%; animation: introFadeUp 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s both, titleGlow 3s ease-in-out 1.5s infinite, titleShimmer 5s ease-in-out 2s infinite;
-    margin-bottom: 4px;
-    filter: drop-shadow(0 0 28px rgba(255,180,0,0.60));
-  }
+  #intro-title { display: none; }
   @keyframes titleGlow {
     0%,100% { filter: drop-shadow(0 0 20px rgba(255,180,0,0.55)) drop-shadow(0 0 40px rgba(255,120,0,0.20)); }
     50%      { filter: drop-shadow(0 0 38px rgba(255,210,0,0.85)) drop-shadow(0 0 70px rgba(255,150,0,0.35)); }
@@ -788,12 +787,7 @@
     0%,100% { background-position: 0% 50%; }
     50%      { background-position: 100% 50%; }
   }
-  #intro-dotgames {
-    font-family: 'Orbitron', monospace; font-weight: 700; font-size: 0.75rem;
-    color: rgba(255,200,0,0.7); letter-spacing: 0.32em;
-    animation: introFadeUp 0.7s ease 0.65s both; margin-bottom: 14px;
-    text-shadow: 0 0 12px rgba(255,180,0,0.5);
-  }
+  #intro-dotgames { display: none; }
   #intro-ecosystem-badge {
     display: flex; align-items: center; gap: 10px; width: 90%;
     font-size: 0.48rem; color: rgba(255,190,0,0.6);
@@ -930,16 +924,16 @@
 
   .login-logo-area {
     display: flex; flex-direction: column; align-items: center;
-    margin-bottom: 22px;
-    filter: drop-shadow(0 0 18px rgba(212,20,90,0.3));
+    margin-bottom: 18px;
+    filter: drop-shadow(0 0 22px rgba(212,20,90,0.38));
   }
-  .login-game-title {
-    font-family: 'Exo 2', sans-serif; font-weight: 900;
-    font-size: 1.6rem; letter-spacing: 0.1em;
-    background: linear-gradient(160deg, #FFE566 0%, #FFD700 30%, #F59E0B 65%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    filter: drop-shadow(0 0 12px rgba(255,190,0,0.55));
-    margin-top: 10px; margin-bottom: 3px;
+  .login-logo-img {
+    width: 130px; height: 130px;
+    object-fit: contain;
+    border-radius: 22%;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 18px rgba(255,180,0,0.55)) drop-shadow(0 0 36px rgba(212,20,90,0.35));
+    animation: introGemPulse 3s ease-in-out 1s infinite;
   }
   .login-studio-text {
     font-family: 'Orbitron', monospace; font-size: 0.4rem;
@@ -1065,7 +1059,7 @@
     #intro-title { font-size: 1.8rem; }
     #intro-studio-badge { margin-bottom: 6px; }
     #intro-coin-strip { margin-bottom: 10px; }
-    #intro-dotgames { margin-bottom: 8px; }
+    #intro-dotgames { display: none; }
     #intro-ecosystem-badge { margin-bottom: 10px; }
   }
 
@@ -1122,37 +1116,8 @@
   <div id="intro-content">
     <div id="intro-studio-badge">✦ &nbsp; FREE TO PLAY &nbsp; ✦</div>
     <div id="intro-gem">
-    <svg width="80" height="80" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="brandG" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#D4145A"/>
-          <stop offset="50%" stop-color="#E84530"/>
-          <stop offset="100%" stop-color="#FF7518"/>
-        </linearGradient>
-        <radialGradient id="coinG" cx="50%" cy="35%" r="65%" gradientUnits="objectBoundingBox">
-          <stop offset="0%" stop-color="#FFE566"/>
-          <stop offset="60%" stop-color="#F59E0B"/>
-          <stop offset="100%" stop-color="#CC8800"/>
-        </radialGradient>
-        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2.5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <!-- Left bracket (thick angular chevron pointing right) -->
-      <path d="M6,10 L28,10 L50,46 L28,82 L6,82 L24,46 Z" fill="url(#brandG)" filter="url(#softGlow)" opacity="0.96"/>
-      <!-- Right bracket (mirror) -->
-      <path d="M86,10 L64,10 L42,46 L64,82 L86,82 L68,46 Z" fill="url(#brandG)" filter="url(#softGlow)" opacity="0.96"/>
-      <!-- Gold coin center (overlaps center of both arms) -->
-      <circle cx="46" cy="46" r="21" fill="url(#coinG)" filter="url(#softGlow)"/>
-      <circle cx="46" cy="46" r="21" fill="none" stroke="rgba(255,220,50,0.45)" stroke-width="2"/>
-      <text x="46" y="52" text-anchor="middle" fill="#6A3A00"
-        font-weight="900" font-size="18" font-family="'Exo 2',Arial Black,sans-serif"
-        letter-spacing="1">MC</text>
-    </svg>
+    <img src="./logo.png" alt="Mergecoin Games" id="intro-logo-img"/>
   </div>
-    <div id="intro-title">MERGECOIN</div>
-    <div id="intro-dotgames">.GAMES</div>
     <div id="intro-ecosystem-badge">CRYPTO MERGE · PHYSICS GAME</div>
     <div id="intro-coin-strip">
       <canvas id="intro-coin-canvas" width="320" height="90" style="max-width:100%;"></canvas>
@@ -1174,7 +1139,7 @@
   <div id="left-panel">
     <div id="header">
       <div id="header-logo">
-        <svg style="display:inline;vertical-align:middle;margin-right:4px;margin-top:-2px" width="18" height="18" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#D4145A"/><stop offset="100%" stop-color="#FF7518"/></linearGradient></defs><polygon points="6,6 2,20 6,34 12,34 8,20 12,6" fill="url(#hG)"/><polygon points="34,6 38,20 34,34 28,34 32,20 28,6" fill="url(#hG)"/><circle cx="20" cy="20" r="10" fill="#F59E0B"/><circle cx="20" cy="20" r="10" fill="none" stroke="rgba(255,220,50,0.5)" stroke-width="1"/></svg>MergeCoin<span>.games</span>
+        <img src="./logo.png" alt="Mergecoin Games" id="header-logo-img"/>
       </div>
       <div id="header-right">
         <div class="icon-btn" id="btn-menu" title="Settings">☰</div>
@@ -1234,30 +1199,7 @@
   <div id="login-screen-bloom"></div>
   <div class="login-panel">
     <div class="login-logo-area">
-      <svg width="64" height="64" viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="lsG" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#D4145A"/>
-            <stop offset="50%" stop-color="#E84530"/>
-            <stop offset="100%" stop-color="#FF6820"/>
-          </linearGradient>
-          <radialGradient id="lsC" cx="50%" cy="35%" r="65%">
-            <stop offset="0%" stop-color="#FFE566"/>
-            <stop offset="55%" stop-color="#F59E0B"/>
-            <stop offset="100%" stop-color="#CC8800"/>
-          </radialGradient>
-          <filter id="lsGlow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="3" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <path d="M6,10 L28,10 L50,46 L28,82 L6,82 L24,46 Z" fill="url(#lsG)" filter="url(#lsGlow)" opacity="0.97"/>
-        <path d="M86,10 L64,10 L42,46 L64,82 L86,82 L68,46 Z" fill="url(#lsG)" filter="url(#lsGlow)" opacity="0.97"/>
-        <circle cx="46" cy="46" r="22" fill="url(#lsC)" filter="url(#lsGlow)"/>
-        <circle cx="46" cy="46" r="22" fill="none" stroke="rgba(255,220,50,0.5)" stroke-width="2"/>
-        <text x="46" y="53" text-anchor="middle" fill="#6A3A00" font-weight="900" font-size="17" font-family="Arial Black,Arial,sans-serif" letter-spacing="0.5">MC</text>
-      </svg>
-      <div class="login-game-title">MergeCoin</div>
+      <img src="./logo.png" alt="Mergecoin Games" class="login-logo-img"/>
       <div class="login-studio-text">✦ &nbsp;Synterlab Studio&nbsp; ✦</div>
     </div>
 
