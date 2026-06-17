@@ -1630,59 +1630,184 @@ function drawCoin(ctx, x, y, coinData, scale = 1, glow = false) {
   const [cr, cg, cb] = hexToRgb(c);
   const t = _ftime * 0.018;
   const isKing = coinData.level === 15;
+  const lvl = coinData.level;
 
   ctx.save();
-  const haloSize = glow ? 2.0 : 1.45;
-  const haloGrad = ctx.createRadialGradient(x, y, r * 0.6, x, y, r * haloSize);
-  haloGrad.addColorStop(0, `rgba(${cr},${cg},${cb},${glow ? 0.4 : 0.18})`);
-  haloGrad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-  ctx.beginPath(); ctx.arc(x, y, r * haloSize, 0, Math.PI * 2);
+
+  // ── 1. Outer ambient halo ──────────────────────────────────
+  const haloR = glow ? r * 2.2 : r * 1.6;
+  const haloA = glow ? 0.55 : 0.22;
+  const haloGrad = ctx.createRadialGradient(x, y, r * 0.5, x, y, haloR);
+  haloGrad.addColorStop(0,   `rgba(${cr},${cg},${cb},${haloA})`);
+  haloGrad.addColorStop(0.45,`rgba(${cr},${cg},${cb},${haloA * 0.35})`);
+  haloGrad.addColorStop(1,   `rgba(${cr},${cg},${cb},0)`);
+  ctx.beginPath(); ctx.arc(x, y, haloR, 0, Math.PI * 2);
   ctx.fillStyle = haloGrad; ctx.fill();
 
-  ctx.shadowBlur = glow ? 28 : 10; ctx.shadowColor = c;
-  const grad = ctx.createRadialGradient(x - r*0.32, y - r*0.38, r*0.02, x + r*0.08, y + r*0.1, r * 1.08);
-  grad.addColorStop(0, lightenHex(c, 110)); grad.addColorStop(0.22, lightenHex(c, 60));
-  grad.addColorStop(0.5, c); grad.addColorStop(0.78, darkenHex(c, 50)); grad.addColorStop(1, darkenHex(c, 85));
+  // ── 2. Rim light (colored edge glow) ──────────────────────
+  // Creates the illusion of a 3D rounded edge lit from top-left
+  ctx.shadowBlur = glow ? 38 : 16;
+  ctx.shadowColor = `rgba(${cr},${cg},${cb},${glow ? 0.95 : 0.55})`;
+
+  // ── 3. Main coin body — rich metallic gradient ─────────────
+  // Light source: top-left at ~10 o'clock
+  const lightX = x - r * 0.38;
+  const lightY = y - r * 0.42;
+  const grad = ctx.createRadialGradient(lightX, lightY, r * 0.01, x + r * 0.12, y + r * 0.14, r * 1.15);
+  grad.addColorStop(0,    lightenHex(c, 130));  // specular peak
+  grad.addColorStop(0.12, lightenHex(c, 85));
+  grad.addColorStop(0.30, lightenHex(c, 42));
+  grad.addColorStop(0.52, c);
+  grad.addColorStop(0.72, darkenHex(c, 45));
+  grad.addColorStop(0.88, darkenHex(c, 70));
+  grad.addColorStop(1,    darkenHex(c, 95));
   ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fillStyle = grad; ctx.fill();
 
   ctx.shadowBlur = 0;
-  ctx.beginPath(); ctx.arc(x, y, r - r*0.025, 0, Math.PI * 2);
-  ctx.strokeStyle = `rgba(0,0,0,0.55)`; ctx.lineWidth = r * 0.055; ctx.stroke();
-  ctx.beginPath(); ctx.arc(x, y, r - r*0.025, Math.PI * 0.8, Math.PI * 1.8);
-  ctx.strokeStyle = `rgba(255,255,255,0.4)`; ctx.lineWidth = r * 0.04; ctx.stroke();
 
-  ctx.beginPath(); ctx.arc(x, y, r * 0.82, 0, Math.PI * 2);
-  ctx.strokeStyle = `rgba(0,0,0,0.32)`; ctx.lineWidth = r * 0.055; ctx.stroke();
-  ctx.beginPath(); ctx.arc(x, y, r * 0.82 - r*0.022, Math.PI * 0.78, Math.PI * 1.82);
-  ctx.strokeStyle = `rgba(255,255,255,0.22)`; ctx.lineWidth = r * 0.03; ctx.stroke();
+  // ── 4. Outer edge ring (dark + light bevel) ────────────────
+  // Dark shadow ring (bottom-right side of coin edge)
+  ctx.beginPath(); ctx.arc(x, y, r - r * 0.018, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(0,0,0,0.60)';
+  ctx.lineWidth = r * 0.065; ctx.stroke();
+  // Light bevel (top-left side of coin edge)
+  ctx.beginPath(); ctx.arc(x, y, r - r * 0.018, Math.PI * 0.72, Math.PI * 1.88);
+  ctx.strokeStyle = 'rgba(255,255,255,0.52)';
+  ctx.lineWidth = r * 0.042; ctx.stroke();
 
-  const sheenA = t % (Math.PI * 2);
-  const sx = x + Math.cos(sheenA) * r * 0.22;
-  const sy = y + Math.sin(sheenA) * r * 0.22;
-  const sheenGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 0.65);
-  sheenGrad.addColorStop(0, `rgba(255,255,255,0.2)`); sheenGrad.addColorStop(1, `rgba(255,255,255,0)`);
+  // ── 5. Inner concentric ring (coin depth illusion) ─────────
+  const innerR = r * 0.80;
+  ctx.beginPath(); ctx.arc(x, y, innerR, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(0,0,0,0.28)';
+  ctx.lineWidth = r * 0.048; ctx.stroke();
+  ctx.beginPath(); ctx.arc(x, y, innerR - r * 0.018, Math.PI * 0.75, Math.PI * 1.85);
+  ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+  ctx.lineWidth = r * 0.030; ctx.stroke();
+
+  // ── 6. Metallic sheen (rotating highlight sweep) ──────────
+  const sheenA = (t * 0.85) % (Math.PI * 2);
+  const sx = x + Math.cos(sheenA) * r * 0.18;
+  const sy = y + Math.sin(sheenA) * r * 0.18;
+  const sheenGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 0.72);
+  const sheenOpacity = 0.12 + 0.10 * Math.sin(t * 1.4);
+  sheenGrad.addColorStop(0, `rgba(255,255,255,${sheenOpacity * 2})`);
+  sheenGrad.addColorStop(0.4, `rgba(255,255,255,${sheenOpacity})`);
+  sheenGrad.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fillStyle = sheenGrad; ctx.fill();
 
-  const hlGrad = ctx.createRadialGradient(x - r*0.4, y - r*0.4, 0, x - r*0.28, y - r*0.26, r * 0.55);
-  hlGrad.addColorStop(0, 'rgba(255,255,255,0.75)'); hlGrad.addColorStop(0.35, 'rgba(255,255,255,0.3)'); hlGrad.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.beginPath(); ctx.ellipse(x - r*0.28, y - r*0.28, r*0.38, r*0.25, -Math.PI/4.5, 0, Math.PI*2);
+  // ── 7. Primary specular highlight (glass-dome top-left) ────
+  const hlGrad = ctx.createRadialGradient(
+    x - r * 0.42, y - r * 0.42, 0,
+    x - r * 0.24, y - r * 0.22, r * 0.58
+  );
+  hlGrad.addColorStop(0,    'rgba(255,255,255,0.90)');
+  hlGrad.addColorStop(0.18, 'rgba(255,255,255,0.52)');
+  hlGrad.addColorStop(0.50, 'rgba(255,255,255,0.18)');
+  hlGrad.addColorStop(1,    'rgba(255,255,255,0)');
+  ctx.beginPath();
+  ctx.ellipse(x - r * 0.30, y - r * 0.30, r * 0.40, r * 0.26, -Math.PI / 4.2, 0, Math.PI * 2);
   ctx.fillStyle = hlGrad; ctx.fill();
 
-  if (isKing) {
-    const nSpk = 8;
-    for (let i = 0; i < nSpk; i++) {
-      const a = (Math.PI*2/nSpk)*i + t * 1.6;
-      const spkX = x + Math.cos(a) * (r + r*0.14);
-      const spkY = y + Math.sin(a) * (r + r*0.14);
-      const spkA = 0.45 + 0.55 * Math.sin(t * 3.5 + i * 1.1);
-      ctx.save(); ctx.globalAlpha = spkA;
-      ctx.fillStyle = '#FFD700'; ctx.shadowBlur = 10; ctx.shadowColor = '#FFD700';
-      drawStar4(ctx, spkX, spkY, Math.max(2.5, r * 0.09)); ctx.restore();
+  // ── 8. Secondary micro-highlight (tiny sharp sparkle) ──────
+  if (r > 18) {
+    const mhGrad = ctx.createRadialGradient(x - r*0.50, y - r*0.50, 0, x - r*0.50, y - r*0.50, r * 0.18);
+    mhGrad.addColorStop(0, 'rgba(255,255,255,0.95)');
+    mhGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.beginPath(); ctx.arc(x - r*0.50, y - r*0.50, r * 0.18, 0, Math.PI * 2);
+    ctx.fillStyle = mhGrad; ctx.fill();
+  }
+
+  // ── 9. Bottom-right rim reflection (warm bounce light) ─────
+  if (r > 24) {
+    const rimGrad = ctx.createRadialGradient(x + r*0.52, y + r*0.50, 0, x + r*0.52, y + r*0.50, r * 0.45);
+    rimGrad.addColorStop(0, `rgba(${Math.min(255,cr+80)},${Math.min(255,cg+40)},${Math.min(255,cb+20)},0.28)`);
+    rimGrad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = rimGrad; ctx.fill();
+  }
+
+  // ── 10. Level-specific subtle aura tint ───────────────────
+  if (r > 30) {
+    const auraColors = [
+      null,                               // 1
+      'rgba(59,130,246,0.08)',            // 2 blue
+      'rgba(249,115,22,0.08)',            // 3 orange
+      'rgba(239,68,68,0.08)',             // 4 red
+      'rgba(16,185,129,0.08)',            // 5 green
+      'rgba(245,158,11,0.10)',            // 6 amber
+      'rgba(236,72,153,0.08)',            // 7 pink
+      'rgba(212,20,90,0.10)',             // 8 crimson
+      'rgba(132,204,22,0.08)',            // 9 lime
+      'rgba(139,92,246,0.10)',            // 10 purple
+      'rgba(244,63,94,0.10)',             // 11 rose
+      'rgba(255,107,53,0.10)',            // 12 orange-red
+      'rgba(20,184,166,0.10)',            // 13 teal
+      'rgba(99,102,241,0.10)',            // 14 indigo
+      'rgba(255,215,0,0.14)',             // 15 gold
+    ];
+    const aura = auraColors[lvl - 1];
+    if (aura) {
+      const aGrad = ctx.createRadialGradient(x, y, r * 0.3, x, y, r * 0.98);
+      aGrad.addColorStop(0, 'rgba(0,0,0,0)');
+      aGrad.addColorStop(0.6, aura);
+      aGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = aGrad; ctx.fill();
     }
-    ctx.beginPath(); ctx.arc(x, y, r * 1.12, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(255,215,0,${0.15 + 0.1 * Math.sin(t * 2)})`; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  // ── 11. King coin: orbiting sparkles + golden rings ────────
+  if (isKing) {
+    // Outer gold ring pulse
+    const ringA1 = 0.18 + 0.12 * Math.sin(t * 2.2);
+    ctx.beginPath(); ctx.arc(x, y, r * 1.14, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,215,0,${ringA1})`;
+    ctx.lineWidth = r * 0.035; ctx.stroke();
+    // Inner gold ring
+    const ringA2 = 0.25 + 0.15 * Math.sin(t * 2.2 + 1.1);
+    ctx.beginPath(); ctx.arc(x, y, r * 1.06, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,230,80,${ringA2})`;
+    ctx.lineWidth = r * 0.020; ctx.stroke();
+    // Orbiting sparkles (8 points)
+    for (let i = 0; i < 8; i++) {
+      const a = (Math.PI * 2 / 8) * i + t * 1.5;
+      const spkX = x + Math.cos(a) * (r * 1.22);
+      const spkY = y + Math.sin(a) * (r * 1.22);
+      const spkA = 0.5 + 0.5 * Math.sin(t * 3.5 + i * 0.9);
+      ctx.save(); ctx.globalAlpha = spkA;
+      ctx.fillStyle = '#FFD700';
+      ctx.shadowBlur = 14; ctx.shadowColor = '#FFD700';
+      drawStar4(ctx, spkX, spkY, Math.max(2.5, r * 0.10));
+      ctx.restore();
+    }
+    // Golden shimmer overlay on coin surface
+    const kGrad = ctx.createRadialGradient(x - r*0.3, y - r*0.3, 0, x, y, r);
+    const kA = 0.08 + 0.06 * Math.sin(t * 2.8);
+    kGrad.addColorStop(0, `rgba(255,220,0,${kA * 2})`);
+    kGrad.addColorStop(0.5, `rgba(255,180,0,${kA})`);
+    kGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = kGrad; ctx.fill();
+  }
+
+  // ── 12. Merge glow burst (when freshly merged) ─────────────
+  if (glow) {
+    const burstGrad = ctx.createRadialGradient(x, y, r * 0.2, x, y, r * 1.8);
+    burstGrad.addColorStop(0,   `rgba(${cr},${cg},${cb},0.50)`);
+    burstGrad.addColorStop(0.35,`rgba(${cr},${cg},${cb},0.22)`);
+    burstGrad.addColorStop(0.70,`rgba(${cr},${cg},${cb},0.06)`);
+    burstGrad.addColorStop(1,   `rgba(${cr},${cg},${cb},0)`);
+    ctx.beginPath(); ctx.arc(x, y, r * 1.8, 0, Math.PI * 2);
+    ctx.fillStyle = burstGrad; ctx.fill();
+    // Extra bright specular on merged coin
+    const mgHl = ctx.createRadialGradient(x - r*0.38, y - r*0.38, 0, x - r*0.20, y - r*0.18, r * 0.50);
+    mgHl.addColorStop(0, 'rgba(255,255,255,1.0)');
+    mgHl.addColorStop(0.25, 'rgba(255,255,255,0.65)');
+    mgHl.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.beginPath(); ctx.ellipse(x - r*0.28, y - r*0.28, r*0.32, r*0.20, -Math.PI/4, 0, Math.PI*2);
+    ctx.fillStyle = mgHl; ctx.fill();
   }
 
   ctx.shadowBlur = 0;
@@ -1704,15 +1829,30 @@ function drawStar4(ctx, x, y, size) {
 function drawCoinIcon(ctx, x, y, r, level) {
   if (r >= 8 && COIN_LOGO_IMGS[level]) {
     const img = COIN_LOGO_IMGS[level];
-    const logoR = r * 0.72;
+    const logoR = r * 0.70;
     ctx.save();
     ctx.beginPath(); ctx.arc(x, y, logoR, 0, Math.PI * 2); ctx.clip();
-    ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fill();
+    // Subtle dark backing for logo readability
+    ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fill();
     ctx.drawImage(img, x - logoR, y - logoR, logoR * 2, logoR * 2);
     ctx.restore();
+    // Logo border ring
     ctx.save(); ctx.beginPath(); ctx.arc(x, y, logoR, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = Math.max(1, r * 0.03); ctx.stroke();
-    ctx.restore(); return;
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = Math.max(1, r * 0.035); ctx.stroke();
+    ctx.restore();
+    // Micro-highlight on logo top
+    if (r > 30) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(x, y, logoR, 0, Math.PI * 2); ctx.clip();
+      const logoHl = ctx.createLinearGradient(x, y - logoR, x, y);
+      logoHl.addColorStop(0, 'rgba(255,255,255,0.18)');
+      logoHl.addColorStop(0.5, 'rgba(255,255,255,0.04)');
+      logoHl.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = logoHl;
+      ctx.fillRect(x - logoR, y - logoR, logoR * 2, logoR);
+      ctx.restore();
+    }
+    return;
   }
   ctx.save(); ctx.translate(x, y);
   const s = r * 0.50;
@@ -1725,8 +1865,13 @@ function drawCoinIcon(ctx, x, y, r, level) {
     const fs = Math.max(5.5, r * 0.52);
     ctx.font = `900 ${fs}px 'Orbitron',monospace`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillText(cd.ticker.substring(0,3), 1.2, 1.5);
-    ctx.fillStyle = 'rgba(255,255,255,0.98)'; ctx.fillText(cd.ticker.substring(0,3), 0, 0);
+    // Drop shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.60)'; ctx.fillText(cd.ticker.substring(0,3), 1.5, 1.8);
+    // White text
+    ctx.fillStyle = 'rgba(255,255,255,1.0)';
+    ctx.shadowBlur = 4; ctx.shadowColor = 'rgba(255,255,255,0.5)';
+    ctx.fillText(cd.ticker.substring(0,3), 0, 0);
+    ctx.shadowBlur = 0;
     ctx.restore(); return;
   }
 
