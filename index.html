@@ -10,12 +10,21 @@
 <meta name="apple-mobile-web-app-title" content="MergeCoin">
 <title>MergeCoin.games — Merge Crypto Tokens</title>
 <meta name="description" content="Drop, merge, and stack crypto tokens in this addictive physics game. Race up the leaderboard!">
-<meta property="og:title" content="MergeCoin.games">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MergeCoin.games — Merge Crypto Tokens">
 <meta property="og:url" content="https://mergecoin.games">
 <meta property="og:description" content="Drop and merge crypto tokens. Stack your way to the top!">
+<meta property="og:image" content="https://mergecoin.games/og.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mergecoin.games/og.png">
+<meta name="twitter:title" content="MergeCoin.games — Merge Crypto Tokens">
+<meta name="twitter:description" content="Drop and merge crypto tokens. Stack your way to the top!">
 <link rel="canonical" href="https://mergecoin.games">
 <link rel="manifest" href="data:application/json,{%22name%22:%22MergeCoin.games%22,%22short_name%22:%22MergeCoin%22,%22display%22:%22fullscreen%22,%22orientation%22:%22any%22,%22background_color%22:%22%230D0906%22,%22theme_color%22:%22%230D0906%22,%22start_url%22:%22/%22}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23181010'/><stop offset='100%25' stop-color='%230D0906'/></linearGradient><linearGradient id='mg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23D4145A'/><stop offset='100%25' stop-color='%23FF7518'/></linearGradient><radialGradient id='cg' cx='50%25' cy='35%25' r='65%25'><stop offset='0%25' stop-color='%23FFE566'/><stop offset='100%25' stop-color='%23CC8800'/></radialGradient></defs><rect width='100' height='100' rx='18' fill='url(%23bg)'/><polygon points='18,18 8,50 18,82 30,82 20,50 30,18' fill='url(%23mg)'/><polygon points='82,18 92,50 82,82 70,82 80,50 70,18' fill='url(%23mg)'/><circle cx='50' cy='50' r='24' fill='url(%23cg)'/><circle cx='50' cy='50' r='24' fill='none' stroke='rgba(255,220,50,0.35)' stroke-width='1.5'/><text x='50' y='56' text-anchor='middle' fill='%237A4A00' font-weight='900' font-size='18' font-family='Arial Black,Arial,sans-serif'>MC</text></svg>">
+<link rel="icon" href="/og.png" type="image/png">
+<link rel="apple-touch-icon" href="/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Inter:wght@400;500;600&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -526,24 +535,53 @@
   .toggle.on::after { left: 20px; }
 
   /* Leaderboard */
-  #leaderboard-modal .modal-card { max-height: 82vh; overflow-y: auto; }
-  .lb-rows-wrap { display: flex; flex-direction: column; gap: 4px; }
-  .lb-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 9px 10px; border-radius: 10px;
-    font-size: 0.8rem;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.04);
-    transition: background 0.15s;
+  #leaderboard-modal .modal-card { padding: 0; overflow: hidden; }
+  .lb-header {
+    padding: 18px 18px 14px;
+    background: linear-gradient(135deg, rgba(212,20,90,0.18) 0%, rgba(255,180,0,0.08) 100%);
+    border-bottom: 1px solid rgba(255,180,0,0.15);
+    text-align: center;
   }
-  .lb-row:hover { background: rgba(255,180,0,0.05); }
-  .lb-row.lb-me-row { background: rgba(255,180,0,0.07); border-color: rgba(255,180,0,0.22); }
-  .lb-rank { font-family: 'Orbitron', monospace; width: 24px; text-align: center; font-weight: 700; color: var(--text-dim); font-size: 0.72rem; }
-  .lb-rank.top3 { font-size: 1rem; color: var(--gold); }
-  .lb-name { flex: 1; color: var(--text); font-family: 'Exo 2', sans-serif; font-weight: 600; font-size: 0.82rem; }
+  .lb-header-title {
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1.1rem; letter-spacing: 0.12em;
+    background: linear-gradient(90deg, #FFE566, var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    text-transform: uppercase;
+  }
+  .lb-header-sub {
+    font-family: 'Orbitron', monospace; font-size: 0.42rem; letter-spacing: 0.32em;
+    color: rgba(255,180,0,0.4); margin-top: 3px; text-transform: uppercase;
+  }
+  .lb-body { padding: 10px 12px 14px; }
+  .lb-rows-wrap { display: flex; flex-direction: column; gap: 5px; }
+  .lb-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 12px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.18s;
+  }
+  .lb-row:hover { background: rgba(255,180,0,0.06); border-color: rgba(255,180,0,0.14); }
+  .lb-row.lb-me-row {
+    background: rgba(255,180,0,0.09);
+    border-color: rgba(255,180,0,0.28);
+    box-shadow: 0 0 14px rgba(255,180,0,0.08);
+  }
+  .lb-rank {
+    font-family: 'Orbitron', monospace; min-width: 28px; text-align: center;
+    font-weight: 700; color: rgba(255,180,0,0.35); font-size: 0.7rem;
+  }
+  .lb-rank.top3 { font-size: 1.15rem; }
+  .lb-name { flex: 1; color: var(--text); font-family: 'Exo 2', sans-serif; font-weight: 600; font-size: 0.84rem; }
   .lb-name.me { color: var(--gold); font-weight: 700; }
-  .lb-coin-badge { font-size: 0.6rem; color: var(--text-dim); background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; white-space: nowrap; }
-  .lb-score { font-family: 'Orbitron', monospace; color: var(--gold); font-weight: 700; font-size: 0.78rem; }
+  .lb-me-tag {
+    font-family: 'Orbitron', monospace; font-size: 0.38rem; letter-spacing: 0.18em;
+    color: rgba(255,180,0,0.7); background: rgba(255,180,0,0.12);
+    border: 1px solid rgba(255,180,0,0.25); border-radius: 4px; padding: 1px 5px;
+  }
+  .lb-coin-badge { font-size: 0.58rem; color: var(--text-dim); background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+  .lb-score { font-family: 'Orbitron', monospace; color: var(--gold); font-weight: 700; font-size: 0.8rem; }
+  .lb-empty { color: var(--text-dim); font-size: 0.78rem; text-align: center; padding: 22px 0 10px; letter-spacing: 0.04em; }
 
   /* Toast */
   #toast-container {
@@ -1240,11 +1278,17 @@
 </div>
 
 <div class="modal-overlay" id="leaderboard-modal">
-  <div class="modal-card">
-    <div class="modal-title">🏆 Leaderboard</div>
-    <div class="lb-rows-wrap" id="leaderboard-list"></div>
-    <hr class="modal-divider">
-    <button class="btn-full btn-ghost" id="btn-close-lb">✕ &nbsp;Close</button>
+  <div class="modal-card" style="padding:0;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;">
+    <div class="lb-header">
+      <div class="lb-header-title">⚡ Leaderboard</div>
+      <div class="lb-header-sub">Top 10 · All Time · Local</div>
+    </div>
+    <div class="lb-body" style="overflow-y:auto;flex:1;">
+      <div class="lb-rows-wrap" id="leaderboard-list"></div>
+    </div>
+    <div style="padding:10px 14px 14px;border-top:1px solid rgba(255,180,0,0.1);">
+      <button class="btn-full btn-ghost" id="btn-close-lb">Close</button>
+    </div>
   </div>
 </div>
 
@@ -1263,8 +1307,9 @@
       <div class="settings-user-sub" id="settings-user-sub">Login to save progress</div>
     </div>
   </div>
-  <div style="margin-top:10px;margin-bottom:4px;">
-    <button class="btn-full btn-secondary" id="btn-logout-settings" style="font-size:0.8rem;padding:9px 12px;">🚪 &nbsp;Logout</button>
+  <div style="margin-top:10px;margin-bottom:4px;display:flex;gap:8px;">
+    <button class="btn-full btn-secondary" id="btn-logout-settings" style="font-size:0.8rem;padding:9px 12px;flex:1;">🚪 Logout</button>
+    <button class="btn-full" id="btn-exit-game" style="flex:1;font-size:0.8rem;padding:9px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.28);color:#F87171;border-radius:12px;font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;">⏏ Exit</button>
   </div>
 
   <div class="settings-section-title">Preferences</div>
@@ -1491,8 +1536,9 @@ const UIManager = (() => {
     c.innerHTML = lb.map((e, i) => {
       const isMe = u && e.username === u.username;
       return `<div class="lb-row${isMe ? ' lb-me-row' : ''}">
-        <div class="lb-rank${i < 3 ? ' top3' : ''}">${medals[i] || (i+1)+'.'}</div>
+        <div class="lb-rank${i < 3 ? ' top3' : ''}">${medals[i] || '#'+(i+1)}</div>
         <div class="lb-name${isMe ? ' me' : ''}">${e.username}</div>
+        ${isMe ? '<span class="lb-me-tag">YOU</span>' : ''}
         ${e.highestCoin ? `<div class="lb-coin-badge">${e.highestCoin}</div>` : ''}
         <div class="lb-score">${e.score.toLocaleString()}</div>
       </div>`;
@@ -2515,6 +2561,11 @@ function init() {
   document.getElementById('btn-go-leaderboard').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); UIManager.renderLeaderboard('leaderboard-list'); UIManager.showModal('leaderboard-modal'); });
   document.getElementById('btn-main-menu').addEventListener('click', () => { UIManager.hideModal('gameover-modal'); showLoginScreen(); });
   document.getElementById('btn-close-lb').addEventListener('click', () => UIManager.hideModal('leaderboard-modal'));
+
+  document.getElementById('btn-exit-game').addEventListener('click', () => {
+    closeSettings();
+    setTimeout(() => showLoginScreen(), 220);
+  });
 
   // ── INTRO SCREEN ──
   (function startIntro() {
